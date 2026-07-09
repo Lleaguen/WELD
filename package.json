@@ -1,0 +1,17 @@
+{
+  "name": "weld",
+  "version": "0.0.0",
+  "private": true,
+  "description": "WELD — End-to-End Type-Safe HTTP Client",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "lint": "pnpm -r run lint",
+    "dev": "pnpm -r run dev --parallel"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0",
+    "tsup": "^8.0.0"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "name": "weld-http",
+  "version": "0.1.0",
+  "description": "End-to-End Type-Safe HTTP client. Offline-first, zero-config, framework agnostic.",
+  "type": "module",
+  "keywords": [
+    "http",
+    "fetch",
+    "typescript",
+    "type-safe",
+    "offline-first",
+    "zod",
+    "react",
+    "vue",
+    "solid",
+    "angular"
+  ],
+  "author": "FrancoRomero",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lleaguen/WELD"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.js",
+      "types": "./dist/react.d.ts"
+    },
+    "./vue": {
+      "import": "./dist/vue.mjs",
+      "require": "./dist/vue.js",
+      "types": "./dist/vue.d.ts"
+    },
+    "./solid": {
+      "import": "./dist/solid.mjs",
+      "require": "./dist/solid.js",
+      "types": "./dist/solid.d.ts"
+    },
+    "./angular": {
+      "import": "./dist/angular.mjs",
+      "require": "./dist/angular.js",
+      "types": "./dist/angular.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@preact/signals-core": "^1.6.0",
+    "zod": "^3.22.0",
+    "@weld/core": "workspace:*",
+    "@weld/react": "workspace:*",
+    "@weld/vue": "workspace:*",
+    "@weld/solid": "workspace:*",
+    "@weld/angular": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "vue": ">=3.3.0",
+    "solid-js": ">=1.8.0",
+    "rxjs": ">=7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": { "optional": true },
+    "vue": { "optional": true },
+    "solid-js": { "optional": true },
+    "rxjs": { "optional": true }
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "vue": "^3.4.0",
+    "solid-js": "^1.8.0",
+    "rxjs": "^7.8.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0"
+  }
+}
