@@ -15,49 +15,48 @@
     "solid",
     "angular"
   ],
-  "author": "FrancoRomero",
+  "author": "Franco Romero",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lleaguen/WELD"
-  },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types":   "./dist/index.d.ts",
+      "import":  "./dist/index.mjs",
+      "require": "./dist/index.js"
     },
     "./react": {
-      "import": "./dist/react.mjs",
-      "require": "./dist/react.js",
-      "types": "./dist/react.d.ts"
+      "types":   "./dist/react.d.ts",
+      "import":  "./dist/react.mjs",
+      "require": "./dist/react.js"
     },
     "./vue": {
-      "import": "./dist/vue.mjs",
-      "require": "./dist/vue.js",
-      "types": "./dist/vue.d.ts"
+      "types":   "./dist/vue.d.ts",
+      "import":  "./dist/vue.mjs",
+      "require": "./dist/vue.js"
     },
     "./solid": {
-      "import": "./dist/solid.mjs",
-      "require": "./dist/solid.js",
-      "types": "./dist/solid.d.ts"
+      "types":   "./dist/solid.d.ts",
+      "import":  "./dist/solid.mjs",
+      "require": "./dist/solid.js"
     },
     "./angular": {
-      "import": "./dist/angular.mjs",
-      "require": "./dist/angular.js",
-      "types": "./dist/angular.d.ts"
+      "types":   "./dist/angular.d.ts",
+      "import":  "./dist/angular.mjs",
+      "require": "./dist/angular.js"
     }
   },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@preact/signals-core": "^1.6.0",
