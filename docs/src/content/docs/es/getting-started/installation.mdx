@@ -1,0 +1,88 @@
+---
+title: Instalación
+description: Cómo instalar weld-http en tu proyecto
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+
+## Instalar
+
+WELD requiere `zod` como peer dependency para la validación en runtime.
+
+<Tabs>
+  <TabItem label="npm">
+```bash
+npm install weld-http zod
+```
+  </TabItem>
+  <TabItem label="pnpm">
+```bash
+pnpm add weld-http zod
+```
+  </TabItem>
+  <TabItem label="yarn">
+```bash
+yarn add weld-http zod
+```
+  </TabItem>
+  <TabItem label="bun">
+```bash
+bun add weld-http zod
+```
+  </TabItem>
+</Tabs>
+
+## Adaptadores de Framework
+
+Todos los adaptadores son opcionales — instalá solo el que necesita tu framework.
+
+<Tabs>
+  <TabItem label="React">
+```ts
+import { useWeld } from 'weld-http/react'
+```
+Requiere `react >= 18` como peer dependency.
+  </TabItem>
+  <TabItem label="Vue">
+```ts
+import { useWeld } from 'weld-http/vue'
+```
+Requiere `vue >= 3.3` como peer dependency.
+  </TabItem>
+  <TabItem label="SolidJS">
+```ts
+import { useWeld } from 'weld-http/solid'
+```
+Requiere `solid-js >= 1.8` como peer dependency.
+  </TabItem>
+  <TabItem label="Angular">
+```ts
+import { toObservable } from 'weld-http/angular'
+```
+Requiere `rxjs >= 7` como peer dependency.
+  </TabItem>
+</Tabs>
+
+## Requisitos
+
+| Runtime | Versión mínima |
+|---------|---------------|
+| Node.js | 18+ |
+| Bun     | 1.0+ |
+| Deno    | 1.30+ |
+| Browser | Cualquier navegador moderno con `fetch` e `IndexedDB` |
+
+## TypeScript
+
+WELD incluye sus propios tipos — no necesitás ningún paquete `@types/`.
+
+Configuración recomendada de `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "bundler"
+  }
+}
+```

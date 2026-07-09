@@ -1,0 +1,64 @@
+---
+title: WELD
+description: End-to-End Type-Safe HTTP Client. Offline-first, zero-config, framework agnostic.
+template: splash
+hero:
+  tagline: The HTTP client that enforces your API contract — at compile time and at runtime.
+  actions:
+    - text: Get Started
+      link: /getting-started/introduction
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/lleaguen/WELD
+      icon: external
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+
+## Why WELD?
+
+<CardGrid stagger>
+  <Card title="E2E Type Safety" icon="seti:typescript">
+    Your backend router type flows into every request. Wrong paths and wrong bodies break at **compile time**. Cost: 0KB.
+  </Card>
+  <Card title="Runtime Validation" icon="shield">
+    Zod schemas validate the actual response at the network boundary. No more silent data corruption from API drift.
+  </Card>
+  <Card title="Offline-First" icon="laptop">
+    GET requests fall back to IndexedDB cache. Mutations queue locally and replay automatically when the network restores.
+  </Card>
+  <Card title="Request Deduplication" icon="rocket">
+    Concurrent requests for the same resource share one in-flight Promise. No duplicate server hits.
+  </Card>
+</CardGrid>
+
+## Install
+
+```bash
+npm install weld-http zod
+```
+
+## Quick example
+
+```ts
+import { Weld } from 'weld-http'
+import { z } from 'zod'
+
+type AppRouter = {
+  'v1/products': {
+    GET: { response: { id: string; name: string; price: number }[] }
+  }
+}
+
+const api = new Weld<AppRouter>('https://api.example.com')
+
+const ProductSchema = z.object({
+  id:    z.string(),
+  name:  z.string(),
+  price: z.number(),
+})
+
+// Type-safe, validated, offline-resilient
+const { signal, promise } = api.get('v1/products', z.array(ProductSchema))
+```

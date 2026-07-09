@@ -1,0 +1,36 @@
+/* WELD brand colors */
+:root {
+  --sl-color-accent-low:  #1a1a2e;
+  --sl-color-accent:      #4f46e5;
+  --sl-color-accent-high: #818cf8;
+}
+
+:root[data-theme='dark'] {
+  --sl-color-accent-low:  #1e1b4b;
+  --sl-color-accent:      #6366f1;
+  --sl-color-accent-high: #a5b4fc;
+}
+
+/* Fix TOC (On this page) width — reduce excessive right panel space */
+.right-sidebar {
+  --sl-sidebar-width: 16rem;
+}
+
+starlight-toc {
+  width: 14rem;
+}
+
+/* Tighten code blocks */
+.expressive-code pre {
+  font-size: 0.875rem;
+}
+
+/* Remove double title when logo replacesTitle=true */
+.site-title span {
+  display: none;
+}
+
+/* Clean header spacing */
+header.header {
+  padding-inline: 1.5rem;
+}

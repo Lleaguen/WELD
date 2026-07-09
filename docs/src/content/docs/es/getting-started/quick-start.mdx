@@ -1,0 +1,147 @@
+---
+title: Inicio Rápido
+description: Hacé tu primera petición type-safe en 5 minutos
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+
+## 1. Definí el contrato de tu backend
+
+El tipo `AppRouter` es el puente entre tu backend y frontend. Definilo una vez y pasalo a `Weld<AppRouter>`.
+
+```ts
+// types/api.ts
+type AppRouter = {
+  'v1/products': {
+    GET: {
+      response: { id: string; name: string; price: number }[]
+    }
+    POST: {
+      body:     { name: string; price: number }
+      response: { id: string }
+    }
+  }
+}
+```
+
+:::tip
+Si tu backend es TypeScript (Next.js, tRPC, Hono), exportá este tipo desde el backend e importalo en el frontend. Sin drift por diseño.
+:::
+
+## 2. Creá los esquemas Zod
+
+Los esquemas Zod validan la respuesta real en runtime.
+
+```ts
+// schemas/product.ts
+import { z } from 'zod'
+
+export const ProductSchema = z.object({
+  id:    z.string(),
+  name:  z.string(),
+  price: z.number().positive(),
+})
+
+export const ProductArraySchema = z.array(ProductSchema)
+```
+
+## 3. Creá el cliente
+
+```ts
+// lib/api.ts
+import { Weld } from 'weld-http'
+import type { AppRouter } from '../types/api'
+
+export const api = new Weld<AppRouter>('https://api.example.com', {
+  headers: { Authorization: 'Bearer tu-token' },
+  timeout: 10_000,
+  retry:   { attempts: 3, delay: 300 },
+})
+```
+
+## 4. Hacé tu primera petición
+
+```ts
+import { api } from '../lib/api'
+import { ProductArraySchema } from '../schemas/product'
+
+const { signal, promise } = api.get('v1/products', ProductArraySchema)
+
+// Via async/await
+const products = await promise
+
+// Via signal reactivo
+signal.status.subscribe((status) => console.log('Status:', status))
+signal.data.subscribe((data)     => console.log('Data:', data))
+```
+
+## 5. Usalo con tu framework
+
+<Tabs>
+  <TabItem label="React">
+```tsx
+import { useWeld } from 'weld-http/react'
+
+export function ProductList() {
+  const { data, loading, error } = useWeld(
+    api.get('v1/products', ProductArraySchema)
+  )
+
+  if (loading) return <p>Cargando...</p>
+  if (error)   return <p>Error: {error.message}</p>
+
+  return (
+    <ul>
+      {data?.map((product) => (
+        <li key={product.id}>
+          {product.name} — ${product.price}
+        </li>
+      ))}
+    </ul>
+  )
+}
+```
+  </TabItem>
+  <TabItem label="Vue">
+```vue
+<script setup lang="ts">
+import { useWeld } from 'weld-http/vue'
+
+const { data, loading, error } = useWeld(
+  api.get('v1/products', ProductArraySchema)
+)
+</script>
+
+<template>
+  <p v-if="loading">Cargando...</p>
+  <p v-else-if="error">Error: {{ error.message }}</p>
+  <ul v-else>
+    <li v-for="product in data" :key="product.id">
+      {{ product.name }} — ${{ product.price }}
+    </li>
+  </ul>
+</template>
+```
+  </TabItem>
+  <TabItem label="SolidJS">
+```tsx
+import { useWeld } from 'weld-http/solid'
+
+export function ProductList() {
+  const { data, loading, error } = useWeld(
+    api.get('v1/products', ProductArraySchema)
+  )
+
+  return (
+    <>
+      {loading() && <p>Cargando...</p>}
+      {error()   && <p>Error: {error()?.message}</p>}
+      <ul>
+        {data()?.map((p) => <li>{p.name} — ${p.price}</li>)}
+      </ul>
+    </>
+  )
+}
+```
+  </TabItem>
+</Tabs>
