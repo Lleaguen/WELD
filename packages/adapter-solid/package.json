@@ -1,5 +1,5 @@
 {
-  "name": "@weld/solid",
+  "name": "@weldjs/solid",
   "version": "0.1.0",
   "description": "WELD adapter for SolidJS — native signals bridge",
   "type": "module",
@@ -20,7 +20,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@weld/core": "workspace:*"
+    "@weldjs/core": "workspace:*"
   },
   "peerDependencies": {
     "solid-js": ">=1.8.0"

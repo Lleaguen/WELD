@@ -1,36 +1,355 @@
-/* WELD brand colors */
+/* ═══════════════════════════════════════════════════════════
+   WELD — Design System
+   Based on the logo: black + cyan neon + indigo/violet + weld point
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Brand tokens ────────────────────────────────────────── */
 :root {
-  --sl-color-accent-low:  #1a1a2e;
-  --sl-color-accent:      #4f46e5;
-  --sl-color-accent-high: #818cf8;
+  --weld-black:        #000000;
+  --weld-surface:      #0a0a0a;
+  --weld-elevated:     #111111;
+  --weld-border:       rgba(255, 255, 255, 0.06);
+  --weld-border-glow:  rgba(0, 229, 255, 0.2);
+
+  /* Neon cyan — left stroke of the W */
+  --weld-cyan:         #00e5ff;
+  --weld-cyan-dim:     rgba(0, 229, 255, 0.15);
+  --weld-cyan-glow:    0 0 20px rgba(0, 229, 255, 0.4), 0 0 60px rgba(0, 229, 255, 0.15);
+
+  /* Indigo/violet — right stroke of the W */
+  --weld-indigo:       #6366f1;
+  --weld-violet:       #818cf8;
+  --weld-indigo-glow:  0 0 20px rgba(99, 102, 241, 0.4);
+
+  /* Weld point — the hot fusion at the center */
+  --weld-point:        #ffd700;
+  --weld-point-warm:   #ff9d7a;
+
+  /* Text */
+  --weld-text:         #f8fafc;
+  --weld-text-muted:   #64748b;
+  --weld-text-subtle:  #334155;
+
+  /* Gradient — cyan to indigo, the full W stroke */
+  --weld-gradient: linear-gradient(135deg, #00e5ff 0%, #6366f1 50%, #818cf8 100%);
+  --weld-gradient-text: linear-gradient(135deg, #00e5ff 0%, #a5b4fc 100%);
 }
 
-:root[data-theme='dark'] {
-  --sl-color-accent-low:  #1e1b4b;
-  --sl-color-accent:      #6366f1;
-  --sl-color-accent-high: #a5b4fc;
+/* ── Override Starlight with WELD identity ───────────────── */
+
+/* Accent = cyan */
+:root {
+  --sl-color-accent-low:  #001a1f;
+  --sl-color-accent:      #00e5ff;
+  --sl-color-accent-high: #67f3ff;
+
+  --sl-color-bg:          #000000;
+  --sl-color-bg-nav:      #000000;
+  --sl-color-bg-sidebar:  #030303;
+  --sl-color-hairline:    rgba(255,255,255,0.06);
+
+  --sl-color-white:       #f8fafc;
+  --sl-color-gray-1:      #94a3b8;
+  --sl-color-gray-2:      #64748b;
+  --sl-color-gray-3:      #334155;
+  --sl-color-gray-4:      #1e293b;
+  --sl-color-gray-5:      #0f172a;
+  --sl-color-gray-6:      #050a12;
+  --sl-color-black:       #000000;
+
+  --sl-font: 'Inter', system-ui, -apple-system, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* Fix TOC (On this page) width — reduce excessive right panel space */
-.right-sidebar {
-  --sl-sidebar-width: 16rem;
+/* ── Import Inter font ───────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Global base ─────────────────────────────────────────── */
+body {
+  background: var(--weld-black) !important;
 }
 
-starlight-toc {
-  width: 14rem;
-}
-
-/* Tighten code blocks */
-.expressive-code pre {
-  font-size: 0.875rem;
-}
-
-/* Remove double title when logo replacesTitle=true */
-.site-title span {
-  display: none;
-}
-
-/* Clean header spacing */
+/* ── Header ──────────────────────────────────────────────── */
 header.header {
-  padding-inline: 1.5rem;
+  background:    rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.1) !important;
+  box-shadow:    0 1px 0 rgba(0, 229, 255, 0.08);
+}
+
+/* ── Logo ────────────────────────────────────────────────── */
+.site-title img {
+  height: 32px;
+  filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.5));
+  transition: filter 0.3s ease;
+}
+.site-title img:hover {
+  filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.8));
+}
+.site-title span {
+  font-weight: 600;
+  font-size:   1.1rem;
+  background:  var(--weld-gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-left: 8px;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+.sidebar-pane {
+  background:    #030303 !important;
+  border-right:  1px solid rgba(255,255,255,0.05) !important;
+}
+
+/* Active sidebar link */
+a[aria-current='page'] {
+  background:    rgba(0, 229, 255, 0.06) !important;
+  border-left:   2px solid var(--weld-cyan) !important;
+  color:         var(--weld-cyan) !important;
+  box-shadow:    inset 0 0 20px rgba(0, 229, 255, 0.04);
+}
+
+/* Sidebar group labels */
+.group-label span {
+  color:          var(--weld-text-muted) !important;
+  font-size:      0.7rem !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  font-weight:    600 !important;
+}
+
+/* ── Content area ────────────────────────────────────────── */
+.content-panel {
+  background: var(--weld-black) !important;
+}
+
+/* ── Typography ──────────────────────────────────────────── */
+.sl-markdown-content h1 {
+  background:  var(--weld-gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sl-markdown-content h2 {
+  color:         var(--weld-text);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.12);
+  padding-bottom: 0.4rem;
+  margin-top:    2.5rem;
+}
+
+.sl-markdown-content h3 {
+  color: var(--weld-cyan);
+}
+
+/* ── Code blocks ─────────────────────────────────────────── */
+.expressive-code {
+  --ec-frm-frameBoxShdCssVal: 0 0 0 1px rgba(0,229,255,0.1), 0 4px 24px rgba(0,0,0,0.6);
+}
+
+.expressive-code pre {
+  background:   #050505 !important;
+  border:       1px solid rgba(0, 229, 255, 0.1) !important;
+  border-radius: 8px !important;
+  font-size:    0.85rem;
+}
+
+/* Inline code */
+.sl-markdown-content code:not(pre code) {
+  background:    rgba(0, 229, 255, 0.07);
+  color:         var(--weld-cyan);
+  border:        1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 4px;
+  padding:       1px 5px;
+  font-size:     0.85em;
+}
+
+/* ── Tables ──────────────────────────────────────────────── */
+.sl-markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.sl-markdown-content th {
+  background:    rgba(0, 229, 255, 0.05);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  color:         var(--weld-cyan);
+  font-size:     0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding:       10px 14px;
+}
+
+.sl-markdown-content td {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding:       10px 14px;
+  color:         var(--weld-text-muted);
+}
+
+.sl-markdown-content tr:hover td {
+  background: rgba(0, 229, 255, 0.02);
+}
+
+/* ── Callouts / Asides ───────────────────────────────────── */
+.starlight-aside {
+  border-left-color: var(--weld-cyan) !important;
+  background:        rgba(0, 229, 255, 0.04) !important;
+}
+
+.starlight-aside--tip {
+  border-left-color: var(--weld-indigo) !important;
+  background:        rgba(99, 102, 241, 0.05) !important;
+}
+
+.starlight-aside--caution {
+  border-left-color: #f59e0b !important;
+  background:        rgba(245, 158, 11, 0.05) !important;
+}
+
+/* ── Cards (index page) ──────────────────────────────────── */
+.card {
+  background:    #0a0a0a !important;
+  border:        1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 10px !important;
+  transition:    border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(0, 229, 255, 0.25) !important;
+  box-shadow:   0 0 24px rgba(0, 229, 255, 0.08) !important;
+}
+
+.card .sl-flex svg {
+  color: var(--weld-cyan) !important;
+}
+
+/* ── Hero (splash page) ──────────────────────────────────── */
+.hero {
+  background: radial-gradient(ellipse 80% 50% at 50% -10%,
+    rgba(0, 229, 255, 0.08) 0%,
+    transparent 70%
+  ) !important;
+}
+
+.hero h1 {
+  background:  var(--weld-gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size:   clamp(2.5rem, 5vw, 4rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.hero .tagline {
+  color:      var(--weld-text-muted) !important;
+  font-size:  1.1rem !important;
+  max-width:  600px;
+}
+
+/* Hero CTA buttons */
+.hero .action.primary {
+  background:  var(--weld-cyan) !important;
+  color:       #000 !important;
+  font-weight: 600 !important;
+  box-shadow:  0 0 20px rgba(0, 229, 255, 0.3) !important;
+  border:      none !important;
+  transition:  box-shadow 0.2s !important;
+}
+
+.hero .action.primary:hover {
+  box-shadow: 0 0 32px rgba(0, 229, 255, 0.5) !important;
+}
+
+.hero .action:not(.primary) {
+  background:  transparent !important;
+  border:      1px solid rgba(255,255,255,0.12) !important;
+  color:       var(--weld-text-muted) !important;
+}
+
+.hero .action:not(.primary):hover {
+  border-color: rgba(0, 229, 255, 0.3) !important;
+  color:        var(--weld-cyan) !important;
+}
+
+/* ── TOC (On this page) ──────────────────────────────────── */
+.right-sidebar-panel {
+  border-left: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+starlight-toc a {
+  color: var(--weld-text-muted) !important;
+  font-size: 0.82rem !important;
+  transition: color 0.15s;
+}
+
+starlight-toc a:hover,
+starlight-toc a[aria-current='true'] {
+  color: var(--weld-cyan) !important;
+}
+
+/* ── Search ──────────────────────────────────────────────── */
+site-search button {
+  background:  rgba(255,255,255,0.04) !important;
+  border:      1px solid rgba(255,255,255,0.08) !important;
+  color:       var(--weld-text-muted) !important;
+  transition:  border-color 0.15s;
+}
+
+site-search button:hover {
+  border-color: rgba(0, 229, 255, 0.3) !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--weld-black);
+}
+::-webkit-scrollbar-thumb {
+  background:    rgba(0, 229, 255, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 229, 255, 0.4);
+}
+
+/* ── Pagination ──────────────────────────────────────────── */
+.pagination-links a {
+  background:    #0a0a0a !important;
+  border:        1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 8px !important;
+  transition:    border-color 0.15s, box-shadow 0.15s;
+}
+
+.pagination-links a:hover {
+  border-color: rgba(0, 229, 255, 0.3) !important;
+  box-shadow:   0 0 12px rgba(0, 229, 255, 0.08) !important;
+}
+
+/* ── Tabs component ──────────────────────────────────────── */
+starlight-tabs [role='tab'][aria-selected='true'] {
+  color:         var(--weld-cyan) !important;
+  border-color:  var(--weld-cyan) !important;
+}
+
+starlight-tabs [role='tabpanel'] {
+  border-color: rgba(0,229,255,0.1) !important;
+}
+
+/* ── Selection ───────────────────────────────────────────── */
+::selection {
+  background: rgba(0, 229, 255, 0.2);
+  color:      var(--weld-text);
+}
+
+/* ── Mobile nav ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.2rem !important;
+  }
 }

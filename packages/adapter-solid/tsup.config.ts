@@ -6,5 +6,5 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ['solid-js', '@weld/core', '@preact/signals-core'],
+  external: ['solid-js', '@weldjs/core', '@preact/signals-core'],
 })

@@ -3,7 +3,9 @@ title: WELD
 description: End-to-End Type-Safe HTTP Client. Offline-first, zero-config, framework agnostic.
 template: splash
 hero:
-  tagline: The HTTP client that enforces your API contract — at compile time and at runtime.
+  tagline: The contract between your backend and frontend, enforced automatically — at compile time and at runtime.
+  image:
+    file: ../../assets/weld.png
   actions:
     - text: Get Started
       link: /getting-started/introduction
@@ -12,42 +14,46 @@ hero:
     - text: View on GitHub
       link: https://github.com/lleaguen/WELD
       icon: external
+      variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components'
 
-## Why WELD?
-
 <CardGrid stagger>
   <Card title="E2E Type Safety" icon="seti:typescript">
-    Your backend router type flows into every request. Wrong paths and wrong bodies break at **compile time**. Cost: 0KB.
+    Your backend router type flows into every request. Wrong paths and wrong bodies break at **compile time**. Zero bundle cost.
   </Card>
   <Card title="Runtime Validation" icon="shield">
-    Zod schemas validate the actual response at the network boundary. No more silent data corruption from API drift.
+    Zod schemas at the network boundary. API drift gets caught before it reaches your UI.
   </Card>
   <Card title="Offline-First" icon="laptop">
-    GET requests fall back to IndexedDB cache. Mutations queue locally and replay automatically when the network restores.
+    GET requests fall back to IndexedDB cache. Mutations queue locally and sync automatically.
   </Card>
   <Card title="Request Deduplication" icon="rocket">
-    Concurrent requests for the same resource share one in-flight Promise. No duplicate server hits.
+    Concurrent requests for the same resource share one in-flight Promise. Zero duplicate server hits.
   </Card>
 </CardGrid>
 
 ## Install
 
 ```bash
-npm install weld-http zod
+npm install @weldjs/http zod
 ```
 
-## Quick example
+```bash
+npm install @weldjs/react zod   # + React components
+```
+
+## Quicklook
 
 ```ts
-import { Weld } from 'weld-http'
+import { Weld } from '@weldjs/http'
 import { z } from 'zod'
 
 type AppRouter = {
   'v1/products': {
-    GET: { response: { id: string; name: string; price: number }[] }
+    GET:  { response: { id: string; name: string; price: number }[] }
+    POST: { body: { name: string; price: number }; response: { id: string } }
   }
 }
 
@@ -59,6 +65,6 @@ const ProductSchema = z.object({
   price: z.number(),
 })
 
-// Type-safe, validated, offline-resilient
+// Type-safe · Validated · Offline-resilient · Deduplicated
 const { signal, promise } = api.get('v1/products', z.array(ProductSchema))
 ```

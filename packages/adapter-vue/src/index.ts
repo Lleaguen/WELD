@@ -10,7 +10,7 @@
 
 import { shallowRef, onUnmounted } from 'vue'
 import type { ShallowRef }         from 'vue'
-import type { WeldResponse, WeldStatus } from '@weld/core'
+import type { WeldResponse, WeldStatus } from '@weldjs/core'
 
 export interface UseWeldResult<T> {
   data:    ShallowRef<T | null>

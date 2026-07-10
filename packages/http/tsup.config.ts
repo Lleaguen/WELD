@@ -22,6 +22,10 @@ export default defineConfig({
     'rxjs',
     '@preact/signals-core',
     'zod',
-    '@weldjs/http',
+    '@weldjs/core',
+    '@weldjs/react',
+    '@weldjs/vue',
+    '@weldjs/solid',
+    '@weldjs/angular',
   ],
 })

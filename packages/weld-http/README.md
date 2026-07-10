@@ -8,6 +8,8 @@
 
 **End-to-End Type-Safe HTTP Client** — Offline-first, zero-config, framework agnostic.
 
+📖 **[Documentation](https://weld-docs.vercel.app)**
+
 ```bash
 npm install weld-http zod
 ```

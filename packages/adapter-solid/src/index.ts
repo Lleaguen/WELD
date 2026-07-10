@@ -10,7 +10,7 @@
 
 import { createSignal, onCleanup } from 'solid-js'
 import type { Accessor }           from 'solid-js'
-import type { WeldResponse, WeldStatus } from '@weld/core'
+import type { WeldResponse, WeldStatus } from '@weldjs/core'
 
 export interface UseWeldResult<T> {
   data:    Accessor<T | null>

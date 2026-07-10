@@ -7,8 +7,7 @@ export default defineConfig({
       title: 'WELD',
       description: 'End-to-End Type-Safe HTTP Client. Offline-first, zero-config, framework agnostic.',
       logo: {
-        light: './src/assets/logo-light.svg',
-        dark:  './src/assets/logo-dark.svg',
+        src:           './src/assets/weld.png',
         replacesTitle: true,
       },
       social: [

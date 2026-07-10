@@ -1,55 +1,45 @@
 /**
- * @weld/react — useWeld() hook
- *
- * Bridges @weld/core signals to React's rendering cycle
- * using useSyncExternalStore (React 18+). No unnecessary re-renders.
- *
- * Usage:
- *   const { data, status, error } = useWeld(api.get('v1/products', Schema))
+ * @weldjs/react — Public API
  */
 
-import { useSyncExternalStore } from 'react'
-import type { WeldResponse, WeldStatus } from '@weld/core'
+// Hook
+export { useWeld }            from './useWeld.js'
+export type { UseWeldResult } from './useWeld.js'
 
-export interface UseWeldResult<T> {
-  data:    T | null
-  status:  WeldStatus
-  error:   Error | null
-  /** True while the request is in-flight */
-  loading: boolean
-}
+// Provider
+export { WeldProvider }       from './provider/WeldProvider.js'
+export type {
+  WeldProviderProps,
+  RouterAdapter,
+  WeldBreakpoints,
+  WeldThemeConfig,
+} from './provider/WeldProvider.js'
 
-/**
- * Subscribes to a WeldResponse and returns reactive state
- * compatible with React's concurrent rendering model.
- *
- * @param response — The WeldResponse returned by api.get() / api.post() / etc.
- */
-export function useWeld<T>(response: WeldResponse<T>): UseWeldResult<T> {
-  const { signal } = response
+// Primitive components
+export { Button }  from './components/Button.js'
+export { Input }   from './components/Input.js'
+export type { WeldButtonProps } from './components/Button.js'
+export type { WeldInputProps }  from './components/Input.js'
 
-  const data = useSyncExternalStore(
-    (notify) => signal.data.subscribe(notify),
-    () => signal.data.value,
-    () => null,
-  )
+// Layout components
+export { Shell }   from './layout/Shell.js'
+export { Header }  from './layout/Header.js'
+export { Sidebar } from './layout/Sidebar.js'
+export { Main }    from './layout/Main.js'
+export { Footer }  from './layout/Footer.js'
+export type { WeldShellProps }   from './layout/Shell.js'
+export type { WeldHeaderProps }  from './layout/Header.js'
+export type { WeldSidebarProps } from './layout/Sidebar.js'
+export type { WeldMainProps }    from './layout/Main.js'
+export type { WeldFooterProps }  from './layout/Footer.js'
 
-  const status = useSyncExternalStore(
-    (notify) => signal.status.subscribe(notify),
-    () => signal.status.value,
-    () => 'idle' as WeldStatus,
-  )
+// Weld namespace — <Weld.Button />, <Weld.Shell />, etc.
+import * as WeldComponents from './components/Weld.js'
+export const Weld = WeldComponents
 
-  const error = useSyncExternalStore(
-    (notify) => signal.error.subscribe(notify),
-    () => signal.error.value,
-    () => null,
-  )
+// Hooks
+export { useResponsive } from './hooks/useResponsive.js'
+export type { Breakpoint } from './hooks/useResponsive.js'
 
-  return {
-    data,
-    status,
-    error,
-    loading: status === 'loading',
-  }
-}
+// Theme
+export type { WeldTokens } from './theme/tokens.js'

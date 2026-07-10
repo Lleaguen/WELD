@@ -1,28 +1,15 @@
 /**
- * weld-http — Core entry point
+ * weld-http — DEPRECATED
  *
- * import { Weld } from 'weld-http'
+ * This package is deprecated. Please migrate to @weldjs/http.
+ * Run: npm install @weldjs/http
  */
 
-export { Weld } from '@weld/core'
+if (typeof console !== 'undefined') {
+  console.warn(
+    '[weld-http] This package is deprecated. Please migrate to @weldjs/http.\n' +
+    'Run: npm install @weldjs/http'
+  )
+}
 
-export type {
-  AppRouter,
-  RouteDefinition,
-  HttpMethod,
-  InferResponse,
-  InferBody,
-  InferQuery,
-  GetRoutes,
-  MutationRoutes,
-  WeldResponse,
-  WeldSignalState,
-  WeldStatus,
-  WeldRequestOptions,
-  WeldClientConfig,
-  RetryOptions,
-} from '@weld/core'
-
-export { WeldNetworkError, WeldValidationError } from '@weld/core'
-export { syncQueue, registerOnlineSync }         from '@weld/core'
-export { readCache, writeCache }                 from '@weld/core'
+export * from '@weldjs/http'

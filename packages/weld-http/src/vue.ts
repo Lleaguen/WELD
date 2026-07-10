@@ -1,8 +1,15 @@
 /**
- * weld-http — Vue adapter
+ * weld-http/vue — DEPRECATED
  *
- * import { useWeld } from 'weld-http/vue'
+ * This package is deprecated. Please migrate to @weldjs/http.
+ * Run: npm install @weldjs/http
  */
 
-export { useWeld }           from '@weld/vue'
-export type { UseWeldResult } from '@weld/vue'
+if (typeof console !== 'undefined') {
+  console.warn(
+    '[weld-http] This package is deprecated. Please migrate to @weldjs/http.\n' +
+    'Update your import: from \'weld-http/vue\' → from \'@weldjs/http/vue\''
+  )
+}
+
+export * from '@weldjs/http/vue'

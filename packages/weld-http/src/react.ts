@@ -1,8 +1,15 @@
 /**
- * weld-http — React adapter
+ * weld-http/react — DEPRECATED
  *
- * import { useWeld } from 'weld-http/react'
+ * This package is deprecated. Please migrate to @weldjs/http.
+ * Run: npm install @weldjs/http
  */
 
-export { useWeld }      from '@weld/react'
-export type { UseWeldResult } from '@weld/react'
+if (typeof console !== 'undefined') {
+  console.warn(
+    '[weld-http] This package is deprecated. Please migrate to @weldjs/http.\n' +
+    'Update your import: from \'weld-http/react\' → from \'@weldjs/http/react\''
+  )
+}
+
+export * from '@weldjs/http/react'

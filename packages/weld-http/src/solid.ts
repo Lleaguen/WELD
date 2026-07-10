@@ -1,8 +1,15 @@
 /**
- * weld-http — SolidJS adapter
+ * weld-http/solid — DEPRECATED
  *
- * import { useWeld } from 'weld-http/solid'
+ * This package is deprecated. Please migrate to @weldjs/http.
+ * Run: npm install @weldjs/http
  */
 
-export { useWeld }           from '@weld/solid'
-export type { UseWeldResult } from '@weld/solid'
+if (typeof console !== 'undefined') {
+  console.warn(
+    '[weld-http] This package is deprecated. Please migrate to @weldjs/http.\n' +
+    'Update your import: from \'weld-http/solid\' → from \'@weldjs/http/solid\''
+  )
+}
+
+export * from '@weldjs/http/solid'

@@ -6,5 +6,6 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ['react', '@weld/core', '@preact/signals-core'],
+  external: ['react', '@weldjs/core', '@preact/signals-core', 'zod'],
+  jsx: 'react-jsx',
 })

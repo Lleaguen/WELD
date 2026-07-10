@@ -9,7 +9,7 @@
  */
 
 import { Observable }              from 'rxjs'
-import type { WeldResponse, WeldStatus } from '@weld/core'
+import type { WeldResponse, WeldStatus } from '@weldjs/core'
 
 export interface WeldObservables<T> {
   data$:    Observable<T | null>

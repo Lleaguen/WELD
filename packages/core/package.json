@@ -1,5 +1,5 @@
 {
-  "name": "@weld/core",
+  "name": "@weldjs/core",
   "version": "0.1.0",
   "description": "WELD core — E2E type-safe HTTP client engine",
   "type": "module",

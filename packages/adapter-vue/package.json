@@ -1,5 +1,5 @@
 {
-  "name": "@weld/vue",
+  "name": "@weldjs/vue",
   "version": "0.1.0",
   "description": "WELD adapter for Vue 3 — useWeld() composable",
   "type": "module",
@@ -20,7 +20,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@weld/core": "workspace:*"
+    "@weldjs/core": "workspace:*"
   },
   "peerDependencies": {
     "vue": ">=3.3.0"
