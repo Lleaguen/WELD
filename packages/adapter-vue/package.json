@@ -1,6 +1,6 @@
 {
   "name": "@weldjs/vue",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "WELD adapter for Vue 3 — useWeld() composable",
   "type": "module",
   "main": "./dist/index.js",
@@ -8,24 +8,29 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@weldjs/core": "workspace:*"
+    "@preact/signals-core": "^1.6.0"
   },
   "peerDependencies": {
     "vue": ">=3.3.0"
   },
   "devDependencies": {
+    "@weldjs/core": "workspace:*",
     "vue": "^3.4.0",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",

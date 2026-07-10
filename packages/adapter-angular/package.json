@@ -1,6 +1,6 @@
 {
   "name": "@weldjs/angular",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "WELD adapter for Angular — Observable bridge",
   "type": "module",
   "main": "./dist/index.js",
@@ -20,7 +20,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@weldjs/core": "workspace:*"
+    "@weldjs/core": "^0.1.0"
   },
   "peerDependencies": {
     "rxjs": ">=7.0.0"

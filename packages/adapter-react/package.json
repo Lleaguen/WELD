@@ -1,27 +1,32 @@
 {
   "name": "@weldjs/react",
-  "version": "0.2.0",
-  "description": "WELD adapter for React — useWeld() hook",
+  "version": "0.2.2",
+  "description": "WELD adapter for React — components, hooks and layout",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@weldjs/core": "workspace:*",
-    "zod": "^3.25.76"
+    "@weldjs/core": "^0.1.0",
+    "@preact/signals-core": "^1.6.0",
+    "zod": "^3.22.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0"
