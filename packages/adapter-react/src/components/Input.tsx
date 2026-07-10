@@ -1,19 +1,9 @@
 /**
  * @weldjs/react — <Weld.Input />
  *
- * Universal input component. A single abstraction that renders as:
- * - text, email, password, number → <input>
- * - multiline → <textarea>
- * - select → <select>
- * - date → <input type="date">
- *
- * Connects directly to a Zod schema for inline validation.
- * Shows network errors from WeldResponse automatically.
- *
- * Usage:
- *   <Weld.Input type="text"      label="Email"  schema={EmailSchema} />
- *   <Weld.Input type="multiline" label="Notes" />
- *   <Weld.Input type="select"    label="Role"   options={['admin','user']} />
+ * Universal input. At rest: invisible, just a clean dark field.
+ * On focus: the weld seam illuminates — thin cyan glow on the border.
+ * On error: switches to red without glow. Clean signal, no noise.
  */
 
 import React, {
@@ -33,40 +23,27 @@ type InputType = 'text' | 'email' | 'password' | 'number' | 'multiline' | 'selec
 type NeonConfig = { color?: string; intensity?: number }
 
 export interface WeldInputProps {
-  /** Input type — controls rendering and behavior */
-  type?:    InputType
-  /** Visible label */
-  label?:   string
-  /** Placeholder text */
-  placeholder?: string
-  /** Current value (controlled) */
-  value?:   string | number
-  /** Default value (uncontrolled) */
+  type?:         InputType
+  label?:        string
+  placeholder?:  string
+  value?:        string | number
   defaultValue?: string | number
-  /** onChange handler */
-  onChange?: (value: string) => void
+  onChange?:     (value: string) => void
   /** Zod schema for inline validation */
-  schema?:  ZodSchema
-  /** External error message (e.g. from API response) */
-  error?:   string
-  /** Helper text shown below the input */
-  hint?:    string
-  /** Disabled state */
-  disabled?: boolean
-  /** Required field */
-  required?: boolean
-  /** Options for select type */
-  options?: string[] | { label: string; value: string }[]
+  schema?:       ZodSchema
+  /** External error (e.g. from API response) */
+  error?:        string
+  hint?:         string
+  disabled?:     boolean
+  required?:     boolean
+  options?:      string[] | { label: string; value: string }[]
   /**
-   * Neon theme:
-   * - true/object → Neon Theme Engine active
-   * - 'none' → No visual styles, only structure preserved
+   * - true/object → Neon Theme Engine (default)
+   * - false/'none' → No styles, structure only
    */
-  neon?:    boolean | NeonConfig | 'none'
-  /** Additional class name */
-  className?: string
-  /** Name attribute */
-  name?: string
+  neon?:         boolean | NeonConfig | 'none'
+  className?:    string
+  name?:         string
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -88,154 +65,127 @@ export function Input({
   className,
   name,
 }: WeldInputProps) {
-  const id           = useId()
-  const [touched,  setTouched]  = useState(false)
+  const id               = useId()
+  const [touched, setTouched]       = useState(false)
   const [internalVal, setInternalVal] = useState(defaultValue ?? '')
-  const [validationError, setValidationError] = useState<string | null>(null)
+  const [validationErr, setValidationErr] = useState<string | null>(null)
+  const [focused, setFocused]       = useState(false)
 
   const currentValue = value !== undefined ? value : internalVal
-  const displayError = externalError ?? (touched ? validationError : null)
+  const displayError = externalError ?? (touched ? validationErr : null)
   const noStyle      = neon === 'none' || neon === false
+
+  const plasma = typeof neon === 'object' && neon !== null && 'color' in neon
+    ? (neon.color ?? 'var(--weld-plasma-cyan, #00d4ff)')
+    : 'var(--weld-plasma-cyan, #00d4ff)'
+
+  const intensity = typeof neon === 'object' && neon !== null && 'intensity' in neon
+    ? (neon.intensity ?? 1) : 1
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const val = e.target.value
     setInternalVal(val)
     onChange?.(val)
-
-    // Inline Zod validation
     if (schema) {
       const result = schema.safeParse(val)
-      setValidationError(result.success ? null : result.error.issues[0]?.message ?? 'Invalid value')
+      setValidationErr(result.success ? null : (result.error.issues[0]?.message ?? 'Invalid value'))
     }
   }
 
-  const handleBlur = () => setTouched(true)
+  if (noStyle) {
+    const commonProps = { id, name, disabled, required, placeholder, className, onChange: handleChange, onBlur: () => setTouched(true) }
+    let field: React.ReactNode
+    if (type === 'multiline') field = <textarea {...(commonProps as TextareaHTMLAttributes<HTMLTextAreaElement>)} value={currentValue} />
+    else if (type === 'select') field = (
+      <select {...(commonProps as SelectHTMLAttributes<HTMLSelectElement>)} value={currentValue}>
+        <option value="" disabled>{placeholder ?? 'Select an option'}</option>
+        {options.map((o) => { const v = typeof o === 'string' ? o : o.value; const l = typeof o === 'string' ? o : o.label; return <option key={v} value={v}>{l}</option> })}
+      </select>
+    )
+    else field = <input {...(commonProps as InputHTMLAttributes<HTMLInputElement>)} type={type} value={currentValue} />
+    return <div className={className}>{label && <label htmlFor={id}>{label}{required && <span>*</span>}</label>}{field}{displayError && <span role="alert">{displayError}</span>}{hint && !displayError && <span>{hint}</span>}</div>
+  }
 
-  // ── Focus state for neon glow ─────────────────────────────────────────────
-  const [focused, setFocused] = useState(false)
+  // ── Field styles — the weld seam ──────────────────────────────────────────
+  // At rest: barely visible. On focus: thin plasma line activates.
 
-  const neonColor = typeof neon === 'object' && neon !== null && 'color' in neon
-    ? (neon.color ?? 'var(--weld-neon-primary, #00d4ff)')
-    : 'var(--weld-neon-primary, #00d4ff)'
-
-  const intensity = typeof neon === 'object' && neon !== null && 'intensity' in neon
-    ? (neon.intensity ?? 1)
-    : 1
-
-  // ── Shared field styles ────────────────────────────────────────────────────
-  const fieldStyles: React.CSSProperties = noStyle ? {} : {
-    width:           '100%',
-    padding:         '9px 12px',
-    fontSize:        '14px',
-    fontFamily:      'inherit',
-    background:      'var(--weld-bg-surface, #111113)',
-    color:           'var(--weld-text-primary, #fafafa)',
-    border:          displayError
-      ? '1px solid #ef4444'
+  const fieldStyles: React.CSSProperties = {
+    width:        '100%',
+    padding:      type === 'multiline' ? '10px 12px' : '0 12px',
+    height:       type === 'multiline' ? 'auto' : '36px',
+    minHeight:    type === 'multiline' ? '96px' : undefined,
+    fontSize:     '13px',
+    lineHeight:   type === 'multiline' ? '1.6' : undefined,
+    fontFamily:   'inherit',
+    background:   focused
+      ? 'var(--weld-bg-elevated, #111115)'
+      : 'var(--weld-bg-surface, #0d0d10)',
+    color:        'var(--weld-text-primary, #f4f4f5)',
+    border:       displayError
+      ? '1px solid rgba(239,68,68,0.50)'
       : focused
-        ? `1px solid ${neonColor}`
-        : '1px solid var(--weld-border, rgba(255,255,255,0.08))',
-    borderRadius:    'var(--weld-radius, 6px)',
-    outline:         'none',
-    transition:      'border 0.15s ease, box-shadow 0.15s ease',
-    boxShadow:       focused && !displayError
-      ? `0 0 0 1px ${neonColor}33, 0 0 ${10 * intensity}px ${neonColor}22`
-      : displayError
-        ? '0 0 0 1px rgba(239,68,68,0.3)'
+        ? `1px solid ${plasma}`
+        : '1px solid var(--weld-border, rgba(255,255,255,0.06))',
+    borderRadius: 'var(--weld-radius, 5px)',
+    outline:      'none',
+    transition:   'border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease',
+    // The weld seam: glow only on focus, diffused and subtle
+    boxShadow: displayError
+      ? '0 0 0 1px rgba(239,68,68,0.15)'
+      : focused
+        ? `0 0 0 1px ${plasma}18, 0 0 ${14 * intensity}px ${plasma}0e`
         : 'none',
-    opacity:         disabled ? 0.5 : 1,
-    cursor:          disabled ? 'not-allowed' : 'text',
-    resize:          type === 'multiline' ? 'vertical' : undefined,
-    minHeight:       type === 'multiline' ? '100px' : undefined,
+    opacity:      disabled ? 0.45 : 1,
+    cursor:       disabled ? 'not-allowed' : type === 'select' ? 'pointer' : 'text',
+    resize:       type === 'multiline' ? 'vertical' : undefined,
   }
 
   const commonProps = {
-    id,
-    name,
-    disabled,
-    required,
-    placeholder,
-    style:     fieldStyles,
-    className,
-    onChange:  handleChange,
-    onBlur:    handleBlur,
-    onFocus:   () => setFocused(true),
+    id, name, disabled, required, placeholder,
+    style:    fieldStyles,
+    onChange: handleChange,
+    onBlur:   () => { setTouched(true); setFocused(false) },
+    onFocus:  () => setFocused(true),
     'data-weld-input': type,
   }
 
-  // ── Render field ──────────────────────────────────────────────────────────
   let field: React.ReactNode
-
   if (type === 'multiline') {
-    field = (
-      <textarea
-        {...(commonProps as TextareaHTMLAttributes<HTMLTextAreaElement>)}
-        value={currentValue}
-        rows={4}
-      />
-    )
+    field = <textarea {...(commonProps as TextareaHTMLAttributes<HTMLTextAreaElement>)} value={currentValue} rows={4} />
   } else if (type === 'select') {
     field = (
-      <select
-        {...(commonProps as SelectHTMLAttributes<HTMLSelectElement>)}
-        value={currentValue}
-        style={{ ...fieldStyles, cursor: disabled ? 'not-allowed' : 'pointer' }}
-      >
+      <select {...(commonProps as SelectHTMLAttributes<HTMLSelectElement>)} value={currentValue}>
         <option value="" disabled>{placeholder ?? 'Select an option'}</option>
-        {options.map((opt) => {
-          const val   = typeof opt === 'string' ? opt : opt.value
-          const label = typeof opt === 'string' ? opt : opt.label
-          return <option key={val} value={val}>{label}</option>
+        {options.map((o) => {
+          const v = typeof o === 'string' ? o : o.value
+          const l = typeof o === 'string' ? o : o.label
+          return <option key={v} value={v}>{l}</option>
         })}
       </select>
     )
   } else {
-    field = (
-      <input
-        {...(commonProps as InputHTMLAttributes<HTMLInputElement>)}
-        type={type}
-        value={currentValue}
-      />
-    )
-  }
-
-  // ── Wrapper ───────────────────────────────────────────────────────────────
-  const wrapperStyles: React.CSSProperties = noStyle ? {} : {
-    display:       'flex',
-    flexDirection: 'column',
-    gap:           '6px',
-    width:         '100%',
-  }
-
-  const labelStyles: React.CSSProperties = noStyle ? {} : {
-    fontSize:    '13px',
-    fontWeight:  500,
-    color:       'var(--weld-text-primary, #fafafa)',
-    userSelect:  'none',
-  }
-
-  const errorStyles: React.CSSProperties = noStyle ? {} : {
-    fontSize:  '12px',
-    color:     '#ef4444',
-    marginTop: '2px',
-  }
-
-  const hintStyles: React.CSSProperties = noStyle ? {} : {
-    fontSize: '12px',
-    color:    'var(--weld-text-muted, #71717a)',
+    field = <input {...(commonProps as InputHTMLAttributes<HTMLInputElement>)} type={type} value={currentValue} />
   }
 
   return (
-    <div style={wrapperStyles}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', width: '100%' }}>
       {label && (
-        <label htmlFor={id} style={labelStyles}>
+        <label htmlFor={id} style={{ fontSize: '12px', fontWeight: 500, color: 'var(--weld-text-secondary, #a1a1aa)', userSelect: 'none', letterSpacing: '0.01em' }}>
           {label}
-          {required && <span style={{ color: '#ef4444', marginLeft: '3px' }}>*</span>}
+          {required && <span style={{ color: 'var(--weld-state-error, #ef4444)', marginLeft: '3px' }}>*</span>}
         </label>
       )}
       {field}
-      {displayError && <span style={errorStyles} role="alert">{displayError}</span>}
-      {hint && !displayError && <span style={hintStyles}>{hint}</span>}
+      {displayError && (
+        <span role="alert" style={{ fontSize: '12px', color: 'var(--weld-state-error, #ef4444)', letterSpacing: '0.005em' }}>
+          {displayError}
+        </span>
+      )}
+      {hint && !displayError && (
+        <span style={{ fontSize: '12px', color: 'var(--weld-text-muted, #52525b)' }}>
+          {hint}
+        </span>
+      )}
     </div>
   )
 }

@@ -1,38 +1,51 @@
 /**
- * @weldjs/react — Neon Theme Tokens
- * CSS custom properties injected at the WeldProvider level.
+ * @weldjs/react — Design Tokens
+ *
+ * Philosophy: Structure is invisible (Vercel/Linear), interactions weld with light.
+ * Neon is reserved exclusively for active, focused, loading, or network-reactive states.
+ * At rest, everything is neutral, dark, and clean.
  */
 
 export const defaultTokens: Record<string, string> = {
-  // Backgrounds
-  '--weld-bg-base':     '#09090b',
-  '--weld-bg-surface':  '#111113',
-  '--weld-bg-elevated': '#18181b',
+  // ── Backgrounds ────────────────────────────────────────────────────────────
+  // Ultra dark, matte. No gradients at rest.
+  '--weld-bg-base':     '#09090b',   // page background
+  '--weld-bg-surface':  '#0d0d10',   // cards, panels
+  '--weld-bg-elevated': '#111115',   // dropdowns, tooltips, modals
 
-  // Borders
-  '--weld-border':       'rgba(255,255,255,0.08)',
-  '--weld-border-hover': 'rgba(255,255,255,0.15)',
+  // ── Borders — extremely subtle, almost invisible ───────────────────────────
+  '--weld-border':         'rgba(255,255,255,0.06)',
+  '--weld-border-hover':   'rgba(255,255,255,0.10)',
+  '--weld-border-focus':   'rgba(0,212,255,0.40)',   // neon only on focus
 
-  // Neon — only on active/interactive states
-  '--weld-neon-primary': '#00d4ff',
-  '--weld-neon-accent':  '#3b5bdb',
-  '--weld-neon-glow':    '0 0 12px rgba(0,212,255,0.35)',
+  // ── Weld Plasma — used ONLY on active/interactive states ──────────────────
+  // Cyan: focused inputs, active buttons, online indicator
+  '--weld-plasma-cyan':    '#00d4ff',
+  // Cobalt: accent, secondary active states
+  '--weld-plasma-cobalt':  '#3b6bff',
+  // Glow — diffused, never harsh
+  '--weld-glow-cyan':      '0 0 0 1px rgba(0,212,255,0.20), 0 0 16px rgba(0,212,255,0.10)',
+  '--weld-glow-cobalt':    '0 0 0 1px rgba(59,107,255,0.25), 0 0 14px rgba(59,107,255,0.12)',
 
-  // Text
-  '--weld-text-primary':  '#fafafa',
-  '--weld-text-muted':    '#71717a',
-  '--weld-text-disabled': '#3f3f46',
+  // ── Text ───────────────────────────────────────────────────────────────────
+  '--weld-text-primary':   '#f4f4f5',   // main content
+  '--weld-text-secondary': '#a1a1aa',   // labels, subtitles
+  '--weld-text-muted':     '#52525b',   // placeholders, hints
+  '--weld-text-disabled':  '#3f3f46',
 
-  // Network state colors
-  '--weld-online':  '#00d4ff',
-  '--weld-offline': '#ef4444',
-  '--weld-loading': '#f59e0b',
+  // ── Semantic states — muted at rest, bright on trigger ────────────────────
+  '--weld-state-online':   '#00d4ff',   // matches plasma-cyan: online = connected
+  '--weld-state-offline':  '#ef4444',
+  '--weld-state-loading':  '#00d4ff',   // pulse animation, same cyan
+  '--weld-state-success':  '#22c55e',
+  '--weld-state-error':    '#ef4444',
 
-  // Radius & spacing
-  '--weld-radius':  '6px',
-  '--weld-radius-lg': '10px',
+  // ── Shape ──────────────────────────────────────────────────────────────────
+  '--weld-radius':     '5px',
+  '--weld-radius-lg':  '8px',
+  '--weld-radius-xl':  '12px',
 
-  // Responsive breakpoints (used in JS for programmatic checks)
+  // ── Responsive breakpoints ─────────────────────────────────────────────────
   '--weld-bp-mobile':  '768',
   '--weld-bp-tablet':  '1024',
 } as const

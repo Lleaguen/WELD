@@ -1,22 +1,15 @@
 /**
  * @weldjs/react — <Weld.Shell />
  *
- * Root layout container. Orchestrates Header, Sidebar, Main and Footer
- * into a responsive grid structure.
- *
- * Usage:
- *   <Weld.Shell>
- *     <Weld.Header position="top" fixed neon />
- *     <Weld.Sidebar position="left" collapsible />
- *     <Weld.Main />
- *     <Weld.Footer />
- *   </Weld.Shell>
+ * Root layout container. Pure structure, zero decoration.
+ * Orchestrates Header, Sidebar, Main, Footer into a responsive grid.
+ * The shell itself is invisible — components inside it bring the light.
  */
 
 import React, { createContext, useContext, useState, type ReactNode } from 'react'
 import { useResponsive } from '../hooks/useResponsive.js'
 
-// ─── Shell Context (shared between layout children) ───────────────────────────
+// ─── Shell Context ────────────────────────────────────────────────────────────
 
 export interface ShellContextValue {
   sidebarOpen:     boolean
@@ -41,29 +34,30 @@ export interface WeldShellProps {
   children:   ReactNode
   className?: string
   style?:     React.CSSProperties
-  /** Disable all Weld visual styles */
   noStyle?:   boolean
 }
 
 export function Shell({ children, className, style, noStyle }: WeldShellProps) {
   const bp = useResponsive()
-  const [sidebarOpen, setSidebarOpen] = useState(bp === 'desktop')
-  const [headerHeight, setHeaderHeight] = useState(60)
+  const [sidebarOpen,  setSidebarOpen]  = useState(bp === 'desktop')
+  const [headerHeight, setHeaderHeight] = useState(56)
   const [footerHeight, setFooterHeight] = useState(0)
 
   const shellStyles: React.CSSProperties = noStyle ? {} : {
-    display:         'flex',
-    flexDirection:   'column',
-    minHeight:       '100dvh',
-    background:      'var(--weld-bg-base, #09090b)',
-    color:           'var(--weld-text-primary, #fafafa)',
-    fontFamily:      'system-ui, -apple-system, sans-serif',
+    display:     'flex',
+    flexDirection: 'column',
+    minHeight:   '100dvh',
+    background:  'var(--weld-bg-base, #09090b)',
+    color:       'var(--weld-text-primary, #f4f4f5)',
+    fontFamily:  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    fontSize:    '14px',
+    lineHeight:  '1.5',
     ...style,
   }
 
   return (
     <ShellContext.Provider value={{
-      sidebarOpen, setSidebarOpen,
+      sidebarOpen,  setSidebarOpen,
       headerHeight, setHeaderHeight,
       footerHeight, setFooterHeight,
     }}>

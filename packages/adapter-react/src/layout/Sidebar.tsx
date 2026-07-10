@@ -1,12 +1,16 @@
 /**
  * @weldjs/react — <Weld.Sidebar />
  *
- * Responsive sidebar with 3 states:
- * - mobile:  drawer (slides in from edge)
- * - tablet:  collapsed (icons only)
- * - desktop: expanded (icons + labels)
+ * At rest: dark panel, invisible border. No decoration.
+ * The neon accent line (top edge) reacts to network state:
+ *   - Online  → cyan plasma line, diffused glow
+ *   - Offline → red, no glow
+ * That single line is the only light source in the sidebar.
  *
- * Neon accent line reacts to online/offline state.
+ * Responsive:
+ *   - mobile:  drawer (slides in, backdrop blur)
+ *   - tablet:  collapsed (icon width only)
+ *   - desktop: expanded
  */
 
 import React, { useEffect, useState, type ReactNode } from 'react'
@@ -22,16 +26,14 @@ type ResponsiveConfig = {
 }
 
 export interface WeldSidebarProps {
-  children?:   ReactNode
-  position?:   'left' | 'right'
-  collapsible?: boolean
-  neon?:       boolean | NeonConfig | 'none'
-  responsive?: ResponsiveConfig
-  className?:  string
-  style?:      React.CSSProperties
-  /** Width when expanded. Default: 240px */
-  width?:      number
-  /** Width when collapsed. Default: 56px */
+  children?:      ReactNode
+  position?:      'left' | 'right'
+  collapsible?:   boolean
+  neon?:          boolean | NeonConfig | 'none'
+  responsive?:    ResponsiveConfig
+  className?:     string
+  style?:         React.CSSProperties
+  width?:         number
   collapsedWidth?: number
 }
 
@@ -49,12 +51,16 @@ export function Sidebar({
   responsive,
   className,
   style,
-  width = 240,
-  collapsedWidth = 56,
+  width = 232,
+  collapsedWidth = 52,
 }: WeldSidebarProps) {
   const { sidebarOpen, setSidebarOpen, headerHeight } = useShell()
-  const bp = useResponsive()
-  const mergedResponsive = { ...defaultResponsive, ...responsive }
+  const bp      = useResponsive()
+  const noStyle = neon === 'none' || neon === false
+  const merged  = { ...defaultResponsive, ...responsive }
+
+  const plasma    = typeof neon === 'object' && neon !== null && 'color' in neon ? (neon.color ?? '#00d4ff') : '#00d4ff'
+  const intensity = typeof neon === 'object' && neon !== null && 'intensity' in neon ? (neon.intensity ?? 1) : 1
 
   const [online, setOnline] = useState(
     typeof navigator !== 'undefined' ? navigator.onLine : true
@@ -68,59 +74,44 @@ export function Sidebar({
     return () => { window.removeEventListener('online', on); window.removeEventListener('offline', off) }
   }, [])
 
-  const noStyle   = neon === 'none' || neon === false
-  const neonColor = typeof neon === 'object' && 'color' in neon ? neon.color ?? '#00e5ff' : '#00e5ff'
-  const intensity = typeof neon === 'object' && 'intensity' in neon ? neon.intensity ?? 1 : 1
-
-  // Determine current display mode
-  const mode = bp === 'mobile' ? mergedResponsive.mobile
-    : bp === 'tablet' ? mergedResponsive.tablet
-    : mergedResponsive.desktop
-
+  const mode = bp === 'mobile' ? merged.mobile : bp === 'tablet' ? merged.tablet : merged.desktop
   const isDrawer    = mode === 'drawer'
   const isCollapsed = mode === 'collapsed'
-  const isHidden    = mode === 'hidden'
+  if (mode === 'hidden') return null
+
   const currentWidth = isCollapsed ? collapsedWidth : width
 
-  if (isHidden) return null
-
   const sidebarStyles: React.CSSProperties = noStyle ? {} : {
-    position:       isDrawer ? 'fixed' : 'sticky',
-    top:            isDrawer ? 0 : headerHeight,
-    [position]:     isDrawer ? (sidebarOpen ? 0 : -width) : 0,
-    height:         isDrawer ? '100dvh' : `calc(100dvh - ${headerHeight}px)`,
-    width:          isDrawer ? width : currentWidth,
-    zIndex:         isDrawer ? 200 : 10,
-    overflowY:      'auto',
-    overflowX:      'hidden',
-    flexShrink:     0,
-    background:     '#030303',
-    borderRight:    position === 'left'
-      ? `1px solid rgba(255,255,255,0.05)`
-      : 'none',
-    borderLeft:     position === 'right'
-      ? `1px solid rgba(255,255,255,0.05)`
-      : 'none',
-    transition:     isDrawer
-      ? `${position} 0.25s cubic-bezier(0.4,0,0.2,1)`
-      : `width 0.2s ease`,
-    display:        'flex',
-    flexDirection:  'column',
+    position:      isDrawer ? 'fixed' : 'sticky',
+    top:           isDrawer ? 0 : headerHeight,
+    [position]:    isDrawer ? (sidebarOpen ? 0 : -width) : 0,
+    height:        isDrawer ? '100dvh' : `calc(100dvh - ${headerHeight}px)`,
+    width:         isDrawer ? width : currentWidth,
+    zIndex:        isDrawer ? 200 : 10,
+    overflowY:     'auto',
+    overflowX:     'hidden',
+    flexShrink:    0,
+    background:    '#0a0a0c',
+    // Single pixel border — very faint
+    borderRight:   position === 'left'  ? '1px solid rgba(255,255,255,0.04)' : 'none',
+    borderLeft:    position === 'right' ? '1px solid rgba(255,255,255,0.04)' : 'none',
+    transition:    isDrawer ? `${position} 0.22s cubic-bezier(0.4,0,0.2,1)` : `width 0.18s ease`,
+    display:       'flex',
+    flexDirection: 'column',
     ...style,
   }
 
-  // Neon accent line (top edge, reacts to online/offline)
-  const accentLineStyles: React.CSSProperties = noStyle ? {} : {
-    height:     '2px',
-    width:      '100%',
+  // The weld seam — the only decorative element. Reacts to network.
+  const accentLine: React.CSSProperties = noStyle ? {} : {
+    height:     '1.5px',
     flexShrink: 0,
     background: online
-      ? `linear-gradient(90deg, ${neonColor} 0%, #6366f1 100%)`
-      : 'linear-gradient(90deg, #ef4444 0%, #7f1d1d 100%)',
-    boxShadow:  online
-      ? `0 0 ${8 * intensity}px ${neonColor}66`
-      : '0 0 8px rgba(239,68,68,0.4)',
-    transition: 'all 0.5s ease',
+      ? `linear-gradient(90deg, ${plasma} 0%, rgba(59,107,255,0.8) 60%, transparent 100%)`
+      : 'linear-gradient(90deg, #ef4444 0%, rgba(127,29,29,0.6) 60%, transparent 100%)',
+    boxShadow: online
+      ? `0 0 ${8 * intensity}px rgba(0,212,255,${0.35 * intensity})`
+      : 'none',
+    transition: 'background 0.5s ease, box-shadow 0.5s ease',
   }
 
   return (
@@ -130,11 +121,11 @@ export function Sidebar({
         <div
           onClick={() => setSidebarOpen(false)}
           style={{
-            position:   'fixed',
-            inset:      0,
-            zIndex:     199,
-            background: 'rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(4px)',
+            position:       'fixed',
+            inset:          0,
+            zIndex:         199,
+            background:     'rgba(0,0,0,0.55)',
+            backdropFilter: 'blur(3px)',
           }}
         />
       )}
@@ -146,36 +137,44 @@ export function Sidebar({
         data-position={position}
         data-mode={mode}
       >
-        {!noStyle && <div style={accentLineStyles} />}
+        {/* The weld seam */}
+        {!noStyle && <div style={accentLine} />}
 
-        <div style={{ flex: 1, padding: isCollapsed ? '12px 8px' : '12px' }}>
+        {/* Content — nav items stack naturally */}
+        <div style={{
+          flex:          1,
+          padding:       isCollapsed ? '10px 6px' : '12px 8px',
+          display:       'flex',
+          flexDirection: 'column',
+          gap:           '2px',
+        }}>
           {children}
         </div>
 
-        {/* Collapse toggle for desktop */}
+        {/* Collapse toggle — desktop only, minimal */}
         {collapsible && bp === 'desktop' && !noStyle && (
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             style={{
-              margin:        '8px',
-              padding:       '8px',
-              background:    'rgba(255,255,255,0.03)',
-              border:        '1px solid rgba(255,255,255,0.06)',
-              borderRadius:  '6px',
-              cursor:        'pointer',
-              color:         'var(--weld-text-muted, #71717a)',
-              display:       'flex',
-              alignItems:    'center',
+              margin:     '6px',
+              padding:    '7px',
+              background: 'transparent',
+              border:     '1px solid rgba(255,255,255,0.05)',
+              borderRadius: 'var(--weld-radius, 5px)',
+              cursor:     'pointer',
+              color:      'var(--weld-text-muted, #52525b)',
+              display:    'flex',
+              alignItems: 'center',
               justifyContent: 'center',
-              transition:    'all 0.15s',
+              transition: 'border-color 0.15s, color 0.15s',
             }}
             aria-label="Toggle sidebar"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path
                 d={position === 'left'
-                  ? (isCollapsed ? 'M5 2l5 5-5 5' : 'M9 2L4 7l5 5')
-                  : (isCollapsed ? 'M9 2L4 7l5 5' : 'M5 2l5 5-5 5')}
+                  ? (isCollapsed ? 'M4 2l4 4-4 4' : 'M8 2L4 6l4 4')
+                  : (isCollapsed ? 'M8 2L4 6l4 4' : 'M4 2l4 4-4 4')}
                 stroke="currentColor"
                 strokeWidth="1.5"
                 strokeLinecap="round"

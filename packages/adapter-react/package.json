@@ -1,6 +1,6 @@
 {
   "name": "@weldjs/react",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "WELD adapter for React — components, hooks and layout",
   "type": "module",
   "main": "./dist/index.js",
