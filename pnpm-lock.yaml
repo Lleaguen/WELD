@@ -153,6 +153,15 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@26.1.1)(happy-dom@20.10.6)(lightningcss@1.32.0)
 
+  packages/create-weld-app:
+    devDependencies:
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.16)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
   packages/forms:
     dependencies:
       '@weldjs/core':
