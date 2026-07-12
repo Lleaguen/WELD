@@ -1,0 +1,70 @@
+---
+title: WELD
+description: Cliente HTTP con Seguridad de Tipos E2E. Offline-first, sin configuración, agnóstico al framework.
+template: splash
+hero:
+  tagline: El contrato entre tu backend y frontend, aplicado automáticamente — en tiempo de compilación y en runtime.
+  image:
+    file: ../../../assets/weld.png
+  actions:
+    - text: Empezar
+      link: /es/getting-started/introduction
+      icon: right-arrow
+      variant: primary
+    - text: Ver en GitHub
+      link: https://github.com/lleaguen/WELD
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+
+<CardGrid stagger>
+  <Card title="Seguridad de Tipos E2E" icon="seti:typescript">
+    El tipo de tu router de backend fluye a cada petición. Rutas y cuerpos incorrectos fallan en **tiempo de compilación**. Costo en bundle: 0.
+  </Card>
+  <Card title="Validación en Runtime" icon="shield">
+    Schemas Zod en la frontera de la red. El drift de la API se detecta antes de llegar a tu UI.
+  </Card>
+  <Card title="Offline-First" icon="laptop">
+    Las peticiones GET recurren al caché IndexedDB. Las mutaciones se encolan localmente y sincronizan automáticamente.
+  </Card>
+  <Card title="Deduplicación" icon="rocket">
+    Las peticiones concurrentes al mismo recurso comparten una Promise. Sin hits duplicados al servidor.
+  </Card>
+</CardGrid>
+
+## Instalar
+
+```bash
+npm install @weldjs/http zod
+```
+
+```bash
+npm install @weldjs/react zod   # + Componentes React
+```
+
+## Ejemplo rápido
+
+```ts
+import { Weld } from '@weldjs/http'
+import { z } from 'zod'
+
+type AppRouter = {
+  'v1/products': {
+    GET:  { response: { id: string; name: string; price: number }[] }
+    POST: { body: { name: string; price: number }; response: { id: string } }
+  }
+}
+
+const api = new Weld<AppRouter>('https://api.ejemplo.com')
+
+const ProductSchema = z.object({
+  id:    z.string(),
+  name:  z.string(),
+  price: z.number(),
+})
+
+// Tipado · Validado · Resiliente offline · Deduplicado
+const { signal, promise } = api.get('v1/products', z.array(ProductSchema))
+```
