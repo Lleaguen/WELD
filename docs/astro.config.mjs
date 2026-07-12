@@ -33,11 +33,59 @@ export default defineConfig({
           label: 'Core Concepts',
           translations: { es: 'Conceptos Clave' },
           items: [
-            { label: 'The 4 Pillars',     translations: { es: 'Los 4 Pilares' },          slug: 'concepts/pillars' },
+            { label: 'The 4 Pillars',      translations: { es: 'Los 4 Pilares' },          slug: 'concepts/pillars' },
             { label: 'E2E Type Safety',    translations: { es: 'Seguridad de Tipos E2E' }, slug: 'concepts/type-safety' },
             { label: 'Runtime Validation', translations: { es: 'Validación en Runtime' },  slug: 'concepts/validation' },
             { label: 'Offline-First',      translations: { es: 'Offline-First' },          slug: 'concepts/offline-first' },
             { label: 'Deduplication',      translations: { es: 'Deduplicación' },          slug: 'concepts/deduplication' },
+          ],
+        },
+        {
+          label: 'UI Components',
+          translations: { es: 'Componentes UI' },
+          items: [
+            { label: 'Overview',    translations: { es: 'Resumen' },    slug: 'components/overview' },
+            { label: 'Layout',      translations: { es: 'Layout' },     slug: 'components/layout' },
+            { label: 'Primitives',  translations: { es: 'Primitivos' }, slug: 'components/primitives' },
+            { label: 'Data Display',translations: { es: 'Datos' },      slug: 'components/data' },
+            { label: 'Feedback',    translations: { es: 'Feedback' },   slug: 'components/feedback' },
+            { label: 'Overlay',     translations: { es: 'Overlays' },   slug: 'components/overlay' },
+            { label: 'Neon Theme',  translations: { es: 'Tema Neon' },  slug: 'components/theme' },
+          ],
+        },
+        {
+          label: 'Router',
+          translations: { es: 'Router' },
+          items: [
+            { label: 'Setup',           translations: { es: 'Configuración' }, slug: 'router/setup' },
+            { label: 'Routes & Params', translations: { es: 'Rutas y Params' },slug: 'router/routes' },
+            { label: 'Navigation',      translations: { es: 'Navegación' },    slug: 'router/navigation' },
+            { label: 'Protected Routes',translations: { es: 'Rutas Protegidas' }, slug: 'router/protected' },
+          ],
+        },
+        {
+          label: 'Forms',
+          translations: { es: 'Formularios' },
+          items: [
+            { label: 'useForm',    slug: 'forms/use-form' },
+            { label: 'Validation', translations: { es: 'Validación' }, slug: 'forms/validation' },
+          ],
+        },
+        {
+          label: 'Server',
+          translations: { es: 'Servidor' },
+          items: [
+            { label: 'WeldServer',   slug: 'server/weld-server' },
+            { label: 'Routes',       translations: { es: 'Rutas' }, slug: 'server/routes' },
+            { label: 'Shared Types', translations: { es: 'Tipos Compartidos' }, slug: 'server/shared-types' },
+          ],
+        },
+        {
+          label: 'CLI',
+          items: [
+            { label: 'weld create', slug: 'cli/create' },
+            { label: 'weld dev',    slug: 'cli/dev' },
+            { label: 'weld build',  slug: 'cli/build' },
           ],
         },
         {

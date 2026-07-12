@@ -33,8 +33,8 @@ importers:
   packages/adapter-angular:
     dependencies:
       '@weldjs/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: ^0.1.0
+        version: 0.1.2
     devDependencies:
       rxjs:
         specifier: ^7.8.0
@@ -51,11 +51,14 @@ importers:
 
   packages/adapter-react:
     dependencies:
+      '@preact/signals-core':
+        specifier: ^1.6.0
+        version: 1.14.4
       '@weldjs/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: ^0.1.0
+        version: 0.1.2
       zod:
-        specifier: ^3.25.76
+        specifier: ^3.22.0
         version: 3.25.76
     devDependencies:
       '@types/react':
@@ -77,8 +80,8 @@ importers:
   packages/adapter-solid:
     dependencies:
       '@weldjs/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: ^0.1.0
+        version: 0.1.2
     devDependencies:
       solid-js:
         specifier: ^1.8.0
@@ -95,10 +98,13 @@ importers:
 
   packages/adapter-vue:
     dependencies:
+      '@preact/signals-core':
+        specifier: ^1.6.0
+        version: 1.14.4
+    devDependencies:
       '@weldjs/core':
         specifier: workspace:*
         version: link:../core
-    devDependencies:
       tsup:
         specifier: ^8.0.0
         version: 8.5.1(postcss@8.5.16)(typescript@5.9.3)
@@ -111,6 +117,19 @@ importers:
       vue:
         specifier: ^3.4.0
         version: 3.5.39(typescript@5.9.3)
+
+  packages/cli:
+    dependencies:
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.16)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
 
   packages/core:
     dependencies:
@@ -134,26 +153,48 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@26.1.1)(happy-dom@20.10.6)(lightningcss@1.32.0)
 
+  packages/forms:
+    dependencies:
+      '@weldjs/core':
+        specifier: ^0.1.0
+        version: 0.1.2
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.31
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.16)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
   packages/http:
     dependencies:
       '@preact/signals-core':
         specifier: ^1.6.0
         version: 1.14.4
       '@weldjs/angular':
-        specifier: workspace:*
-        version: link:../adapter-angular
+        specifier: '>=0.1.0'
+        version: 0.1.1(rxjs@7.8.2)
       '@weldjs/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: ^0.1.0
+        version: 0.1.2
       '@weldjs/react':
-        specifier: workspace:*
-        version: link:../adapter-react
+        specifier: ^0.2.1
+        version: 0.2.5(react@18.3.1)
       '@weldjs/solid':
-        specifier: workspace:*
-        version: link:../adapter-solid
+        specifier: '>=0.1.0'
+        version: 0.1.1(solid-js@1.9.14)
       '@weldjs/vue':
-        specifier: workspace:*
-        version: link:../adapter-vue
+        specifier: '>=0.1.1'
+        version: 0.1.2(vue@3.5.39(typescript@5.9.3))
       zod:
         specifier: ^3.22.0
         version: 3.25.76
@@ -180,14 +221,46 @@ importers:
         specifier: ^3.4.0
         version: 3.5.39(typescript@5.9.3)
 
+  packages/router:
+    dependencies:
+      '@weldjs/core':
+        specifier: ^0.1.0
+        version: 0.1.2
+    devDependencies:
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.31
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.16)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/server:
+    dependencies:
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.16)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
   packages/weld-http:
     dependencies:
       '@preact/signals-core':
         specifier: ^1.6.0
         version: 1.14.4
       '@weldjs/http':
-        specifier: workspace:*
-        version: link:../http
+        specifier: ^2.0.1
+        version: 2.0.4(@weldjs/angular@0.1.1(rxjs@7.8.2))(@weldjs/solid@0.1.1(solid-js@1.9.14))(@weldjs/vue@0.1.2(vue@3.5.39(typescript@5.9.3)))(react@18.3.1)(rxjs@7.8.2)(solid-js@1.9.14)(vue@3.5.39(typescript@5.9.3))
       zod:
         specifier: ^3.22.0
         version: 3.25.76
@@ -1441,6 +1514,55 @@ packages:
 
   '@vue/shared@3.5.39':
     resolution: {integrity: sha512-l1rrBtBfTnmxvtsvdQDXltUUy8S1Y+ZaqdfUzmAnJkTd8Z8rv5v/ytW+TKiqEOWyHPoqtPlNFSs0lhRmYVSHVA==}
+
+  '@weldjs/angular@0.1.1':
+    resolution: {integrity: sha512-yxf2gWkn1pZuqhA5EdwN5NfXjWCTgMz0kawFR+Y/AdxxUDFrucJE8TzIs6S9xmRVSWkkmXRZBCE4axqblCl/Jw==}
+    peerDependencies:
+      rxjs: '>=7.0.0'
+
+  '@weldjs/core@0.1.2':
+    resolution: {integrity: sha512-tMjOnUY4fg1Tbk6dnAchylIh57DiLrAs2Wor9xCusrYh5ro5wp20IYyGWmy6esU+Wm3YrFK0q2TCImZ9/8AaLw==}
+
+  '@weldjs/http@2.0.4':
+    resolution: {integrity: sha512-odU4Y91ccqeUU434REo9W02egUzEVbxsQmNDeBIDmHRttywgI0SKAQAq1xqOSvMLb23hKFflD7iCxO9KMZUXTQ==}
+    peerDependencies:
+      '@weldjs/angular': '>=0.1.0'
+      '@weldjs/solid': '>=0.1.0'
+      '@weldjs/vue': '>=0.1.1'
+      react: '>=18.0.0'
+      rxjs: '>=7.0.0'
+      solid-js: '>=1.8.0'
+      vue: '>=3.3.0'
+    peerDependenciesMeta:
+      '@weldjs/angular':
+        optional: true
+      '@weldjs/solid':
+        optional: true
+      '@weldjs/vue':
+        optional: true
+      react:
+        optional: true
+      rxjs:
+        optional: true
+      solid-js:
+        optional: true
+      vue:
+        optional: true
+
+  '@weldjs/react@0.2.5':
+    resolution: {integrity: sha512-QJaV3rh5cSoqK/X0z201cYIyW0LDcgJ6n5+pLTbY537X+oKmhIN8REfiDHrosoHg0+JfCcqBLG9W9oObO5pdBg==}
+    peerDependencies:
+      react: '>=18.0.0'
+
+  '@weldjs/solid@0.1.1':
+    resolution: {integrity: sha512-A8fEFQ2lX709uzc81mJqiBvkSrlmenR8UWTZS88oO7bcUoRlqPcWmXDUHPbdZp0euOOLhu3G0RStF7TB50+l+A==}
+    peerDependencies:
+      solid-js: '>=1.8.0'
+
+  '@weldjs/vue@0.1.2':
+    resolution: {integrity: sha512-gNATcYPBYn68pkO6kDmWdpTR06ZWn6Ig9tkfXcd+vEK+T2hi3uGlSeqXZ3/ZVKSfaPq08IDlx4pWXziu+bMeMA==}
+    peerDependencies:
+      vue: '>=3.3.0'
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -4067,6 +4189,48 @@ snapshots:
       vue: 3.5.39(typescript@5.9.3)
 
   '@vue/shared@3.5.39': {}
+
+  '@weldjs/angular@0.1.1(rxjs@7.8.2)':
+    dependencies:
+      '@weldjs/core': 0.1.2
+      rxjs: 7.8.2
+
+  '@weldjs/core@0.1.2':
+    dependencies:
+      '@preact/signals-core': 1.14.4
+      zod: 3.25.76
+
+  '@weldjs/http@2.0.4(@weldjs/angular@0.1.1(rxjs@7.8.2))(@weldjs/solid@0.1.1(solid-js@1.9.14))(@weldjs/vue@0.1.2(vue@3.5.39(typescript@5.9.3)))(react@18.3.1)(rxjs@7.8.2)(solid-js@1.9.14)(vue@3.5.39(typescript@5.9.3))':
+    dependencies:
+      '@preact/signals-core': 1.14.4
+      '@weldjs/core': 0.1.2
+      '@weldjs/react': 0.2.5(react@18.3.1)
+      zod: 3.25.76
+    optionalDependencies:
+      '@weldjs/angular': 0.1.1(rxjs@7.8.2)
+      '@weldjs/solid': 0.1.1(solid-js@1.9.14)
+      '@weldjs/vue': 0.1.2(vue@3.5.39(typescript@5.9.3))
+      react: 18.3.1
+      rxjs: 7.8.2
+      solid-js: 1.9.14
+      vue: 3.5.39(typescript@5.9.3)
+
+  '@weldjs/react@0.2.5(react@18.3.1)':
+    dependencies:
+      '@preact/signals-core': 1.14.4
+      '@weldjs/core': 0.1.2
+      react: 18.3.1
+      zod: 3.25.76
+
+  '@weldjs/solid@0.1.1(solid-js@1.9.14)':
+    dependencies:
+      '@weldjs/core': 0.1.2
+      solid-js: 1.9.14
+
+  '@weldjs/vue@0.1.2(vue@3.5.39(typescript@5.9.3))':
+    dependencies:
+      '@preact/signals-core': 1.14.4
+      vue: 3.5.39(typescript@5.9.3)
 
   acorn-jsx@5.3.2(acorn@8.17.0):
     dependencies:

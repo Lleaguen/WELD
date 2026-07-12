@@ -3,6 +3,9 @@
    Based on the logo: black + cyan neon + indigo/violet + weld point
    ═══════════════════════════════════════════════════════════ */
 
+/* ── Import Inter font — must be first ──────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 /* ── Brand tokens ────────────────────────────────────────── */
 :root {
   --weld-black:        #000000;
@@ -60,9 +63,6 @@
   --sl-font: 'Inter', system-ui, -apple-system, sans-serif;
   --sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
-
-/* ── Import Inter font ───────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* ── Global base ─────────────────────────────────────────── */
 body {
