@@ -57,8 +57,6 @@ async function main() {
     'react-dom':      '^18.0.0',
   }
 
-  const weldLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfsAAAHsCAYAAADVWATxAAAQAElEQVR4Aez9CYBkR3mgi8Z29pN7Ze1b V+/darWk0tZaoISEoAGxmCnZYxssbL/mmbniGsbb9X0zRb1378x47AseydgjeUEGY2ZUgzEILBACCoQktLSWVu97VdeelXuePZYXKYwNQkt3q7uzqvtER2Rl'
-
   await write(dest, 'package.json', JSON.stringify({
     name,
     version: '0.1.0',
@@ -164,19 +162,23 @@ export function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <Weld.Shell style={{ background: '#0a0e27' }}>
-      <Weld.Header fixed style={{ background: 'rgba(10, 14, 39, 0.95)', borderBottom: '1px solid rgba(0, 212, 255, 0.1)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '32px' }}>
-          <img src="/weld.png" alt="WELD" onClick={() => setPage('home')} style={{ cursor: 'pointer', height: '32px', width: 'auto' }} />
-          </div>
-          <nav style={{ display: 'flex', gap: '32px', marginLeft: 'auto' }}>
+    <Weld.Shell style={{ background: '#0a0e27', display: 'flex', flexDirection: 'column' }}>
+      <Weld.Header fixed style={{ background: 'rgba(10, 14, 39, 0.98)', borderBottom: '1px solid rgba(0, 212, 255, 0.2)', padding: '16px 24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+          <img 
+            src="/weld.png" 
+            alt="WELD" 
+            onClick={() => setPage('home')} 
+            style={{ cursor: 'pointer', height: '40px', width: 'auto' }} 
+          />
+          <nav style={{ display: 'flex', gap: '24px' }}>
             <button 
               onClick={() => setPage('home')}
               style={{ 
                 background: 'none', 
                 border: 'none', 
                 cursor: 'pointer', 
-                color: page === 'home' ? '#00d4ff' : '#999',
+                color: page === 'home' ? '#00d4ff' : '#888',
                 fontSize: '14px',
                 fontWeight: '500',
                 transition: 'color 0.2s'
@@ -190,7 +192,7 @@ export function App() {
                 background: 'none', 
                 border: 'none', 
                 cursor: 'pointer', 
-                color: page === 'about' ? '#00d4ff' : '#999',
+                color: page === 'about' ? '#00d4ff' : '#888',
                 fontSize: '14px',
                 fontWeight: '500',
                 transition: 'color 0.2s'
@@ -202,45 +204,49 @@ export function App() {
         </div>
       </Weld.Header>
 
-      <Weld.Main style={{ background: '#0a0e27', padding: '60px 20px' }}>
-        {page === 'home' && (
-          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-            <Weld.Section title="Welcome to WELD" divider={false}>
-              <Weld.Text style={{ fontSize: '16px', color: '#aaa' }}>
+      <Weld.Main style={{ background: '#0a0e27', padding: '80px 24px 40px' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          {page === 'home' && (
+            <div>
+              <Weld.Heading level={1} style={{ color: '#00d4ff', marginBottom: '16px', fontSize: '36px' }}>
+                Welcome to WELD
+              </Weld.Heading>
+              <Weld.Text style={{ color: '#aaa', fontSize: '16px', marginBottom: '40px' }}>
                 A modern fullstack framework for building type-safe, offline-first web applications.
               </Weld.Text>
 
-              <div style={{ marginTop: '48px' }}>
-                <Weld.Heading level={3} style={{ color: '#e0e0e0', marginBottom: '24px' }}>Features</Weld.Heading>
-                <Weld.Grid cols={3} gap={16}>
-                  <Weld.Card style={{ background: 'rgba(0, 212, 255, 0.05)', border: '1px solid rgba(0, 212, 255, 0.2)' }} accent>
-                    <Weld.Heading level={4} style={{ color: '#00d4ff' }}>Type Safety</Weld.Heading>
-                    <Weld.Text style={{ color: '#aaa', marginTop: '8px' }}>End-to-end type checking from API to UI</Weld.Text>
-                  </Weld.Card>
-                  <Weld.Card style={{ background: 'rgba(59, 107, 255, 0.05)', border: '1px solid rgba(59, 107, 255, 0.2)' }}>
-                    <Weld.Heading level={4} style={{ color: '#e0e0e0' }}>Offline-First</Weld.Heading>
-                    <Weld.Text style={{ color: '#aaa', marginTop: '8px' }}>Automatic caching and sync queue</Weld.Text>
-                  </Weld.Card>
-                  <Weld.Card style={{ background: 'rgba(59, 107, 255, 0.05)', border: '1px solid rgba(59, 107, 255, 0.2)' }}>
-                    <Weld.Heading level={4} style={{ color: '#e0e0e0' }}>Zero Config</Weld.Heading>
-                    <Weld.Text style={{ color: '#aaa', marginTop: '8px' }}>Beautiful components out of the box</Weld.Text>
-                  </Weld.Card>
-                </Weld.Grid>
-              </div>
+              <Weld.Heading level={2} style={{ color: '#e0e0e0', marginBottom: '24px', fontSize: '20px' }}>
+                Features
+              </Weld.Heading>
+              <Weld.Grid cols={3} gap={16} style={{ marginBottom: '40px' }}>
+                <Weld.Card style={{ background: 'rgba(0, 212, 255, 0.05)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: '20px' }}>
+                  <Weld.Heading level={4} style={{ color: '#00d4ff', fontSize: '16px', marginBottom: '8px' }}>Type Safety</Weld.Heading>
+                  <Weld.Text style={{ color: '#aaa', fontSize: '14px' }}>End-to-end type checking</Weld.Text>
+                </Weld.Card>
+                <Weld.Card style={{ background: 'rgba(0, 212, 255, 0.05)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: '20px' }}>
+                  <Weld.Heading level={4} style={{ color: '#00d4ff', fontSize: '16px', marginBottom: '8px' }}>Offline-First</Weld.Heading>
+                  <Weld.Text style={{ color: '#aaa', fontSize: '14px' }}>Automatic caching & sync</Weld.Text>
+                </Weld.Card>
+                <Weld.Card style={{ background: 'rgba(0, 212, 255, 0.05)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: '20px' }}>
+                  <Weld.Heading level={4} style={{ color: '#00d4ff', fontSize: '16px', marginBottom: '8px' }}>Zero Config</Weld.Heading>
+                  <Weld.Text style={{ color: '#aaa', fontSize: '14px' }}>Works out of the box</Weld.Text>
+                </Weld.Card>
+              </Weld.Grid>
 
-              <Weld.Divider style={{ margin: '48px 0', borderColor: 'rgba(0, 212, 255, 0.1)' }} />
+              <Weld.Divider style={{ margin: '40px 0', borderColor: 'rgba(0, 212, 255, 0.15)' }} />
 
-              <Weld.Heading level={3} style={{ color: '#e0e0e0', marginBottom: '24px' }}>Try It</Weld.Heading>
-              <div style={{ padding: '32px', background: 'rgba(0, 212, 255, 0.08)', border: '1px solid rgba(0, 212, 255, 0.15)', borderRadius: '8px' }}>
-                <Weld.Text style={{ color: '#aaa' }}>
-                  Counter: <strong style={{ color: '#00d4ff', fontSize: '18px' }}>{count}</strong>
-                </Weld.Text>
+              <Weld.Heading level={2} style={{ color: '#e0e0e0', marginBottom: '24px', fontSize: '20px' }}>
+                Try It Out
+              </Weld.Heading>
+              <Weld.Card style={{ background: 'rgba(0, 212, 255, 0.08)', border: '1px solid rgba(0, 212, 255, 0.2)', padding: '24px' }}>
+                <div style={{ marginBottom: '16px' }}>
+                  <Weld.Text style={{ color: '#aaa', marginBottom: '12px' }}>Counter: <strong style={{ color: '#00d4ff', fontSize: '20px' }}>{count}</strong></Weld.Text>
+                </div>
                 <button 
                   onClick={() => setCount(count + 1)}
                   style={{ 
-                    marginTop: '16px',
-                    padding: '8px 16px',
-                    background: 'rgba(0, 212, 255, 0.1)',
+                    padding: '10px 20px',
+                    background: 'rgba(0, 212, 255, 0.15)',
                     border: '1px solid rgba(0, 212, 255, 0.3)',
                     color: '#00d4ff',
                     borderRadius: '4px',
@@ -250,46 +256,51 @@ export function App() {
                     transition: 'all 0.2s'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(0, 212, 255, 0.2)'
-                    e.currentTarget.style.boxShadow = '0 0 10px rgba(0, 212, 255, 0.3)'
+                    e.currentTarget.style.background = 'rgba(0, 212, 255, 0.25)'
+                    e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 212, 255, 0.3)'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)'
+                    e.currentTarget.style.background = 'rgba(0, 212, 255, 0.15)'
                     e.currentTarget.style.boxShadow = 'none'
                   }}
                 >
                   Increment
                 </button>
-              </div>
-            </Weld.Section>
-          </div>
-        )}
+              </Weld.Card>
+            </div>
+          )}
 
-        {page === 'about' && (
-          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-            <Weld.Section title="About WELD">
-              <Weld.Text style={{ color: '#aaa', marginBottom: '24px' }}>
-                WELD is designed for developers who want to build modern web applications without fighting complexity.
+          {page === 'about' && (
+            <div>
+              <Weld.Heading level={1} style={{ color: '#00d4ff', marginBottom: '16px', fontSize: '36px' }}>
+                About WELD
+              </Weld.Heading>
+              <Weld.Text style={{ color: '#aaa', fontSize: '16px', marginBottom: '32px' }}>
+                WELD is a modern fullstack framework designed for developers who want to build sophisticated web applications without fighting unnecessary complexity.
               </Weld.Text>
 
-              <Weld.Heading level={3} style={{ color: '#e0e0e0', marginTop: '32px', marginBottom: '16px' }}>Why WELD?</Weld.Heading>
-              <ul style={{ paddingLeft: '24px', lineHeight: '1.8', color: '#aaa' }}>
-                <li style={{ marginBottom: '12px' }}><strong style={{ color: '#00d4ff' }}>Type Safety:</strong> End-to-end type checking</li>
-                <li style={{ marginBottom: '12px' }}><strong style={{ color: '#00d4ff' }}>Offline-First:</strong> Built-in caching and sync</li>
-                <li style={{ marginBottom: '12px' }}><strong style={{ color: '#00d4ff' }}>Zero Config:</strong> Components work immediately</li>
+              <Weld.Heading level={2} style={{ color: '#e0e0e0', marginBottom: '16px', fontSize: '20px' }}>
+                Why Choose WELD?
+              </Weld.Heading>
+              <ul style={{ paddingLeft: '24px', lineHeight: '2', color: '#aaa', marginBottom: '32px' }}>
+                <li><strong style={{ color: '#00d4ff' }}>Type Safety:</strong> Full end-to-end type checking</li>
+                <li><strong style={{ color: '#00d4ff' }}>Offline-First:</strong> Automatic caching and sync</li>
+                <li><strong style={{ color: '#00d4ff' }}>Zero Config:</strong> Beautiful components ready to use</li>
               </ul>
 
-              <Weld.Heading level={3} style={{ color: '#e0e0e0', marginTop: '32px', marginBottom: '16px' }}>Learn More</Weld.Heading>
-              <Weld.Text style={{ color: '#aaa' }}>
-                Check out the <a href="https://weld-docs.vercel.app" target="_blank" rel="noopener noreferrer">documentation</a>.
+              <Weld.Text style={{ color: '#aaa', fontSize: '16px' }}>
+                Learn more at{' '}
+                <a href="https://weld-docs.vercel.app" target="_blank" rel="noopener noreferrer" style={{ color: '#00d4ff', textDecoration: 'none' }}>
+                  weld-docs.vercel.app
+                </a>
               </Weld.Text>
-            </Weld.Section>
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </Weld.Main>
 
-      <Weld.Footer style={{ background: 'rgba(10, 14, 39, 0.95)', borderTop: '1px solid rgba(0, 212, 255, 0.1)' }}>
-        <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>Built with ⬡ WELD</p>
+      <Weld.Footer style={{ background: 'rgba(10, 14, 39, 0.98)', borderTop: '1px solid rgba(0, 212, 255, 0.1)', padding: '24px', textAlign: 'center', marginTop: 'auto' }}>
+        <Weld.Text style={{ fontSize: '14px', color: '#666', margin: 0 }}>Built with WELD</Weld.Text>
       </Weld.Footer>
 
       <Weld.ToastProvider />
