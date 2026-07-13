@@ -1,6 +1,6 @@
 {
   "name": "@weldjs/cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "WELD CLI — scaffold, dev server, build",
   "type": "module",
   "bin": {

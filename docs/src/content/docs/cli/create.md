@@ -3,6 +3,15 @@ title: weld create
 description: Scaffold a new WELD application.
 ---
 
+The recommended way to create a new WELD app:
+
+```bash
+npm create weld-app
+npm create weld-app my-app
+```
+
+Or using the CLI directly:
+
 ```bash
 npx @weldjs/cli create my-app
 npx @weldjs/cli create my-app --template fullstack

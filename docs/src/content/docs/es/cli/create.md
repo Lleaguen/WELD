@@ -3,6 +3,15 @@ title: weld create
 description: Generá una nueva aplicación WELD.
 ---
 
+La forma recomendada de crear una nueva app WELD:
+
+```bash
+npm create weld-app
+npm create weld-app mi-app
+```
+
+O usando el CLI directamente:
+
 ```bash
 npx @weldjs/cli create mi-app
 npx @weldjs/cli create mi-app --template fullstack
