@@ -1,12 +1,12 @@
 {
   "name": "create-weld-app",
-  "version": "0.10.0",
+  "version": "0.13.0",
   "description": "Create a new WELD app — npm create weld-app",
   "type": "module",
   "bin": {
     "create-weld-app": "./dist/index.js"
   },
-  "files": ["dist", "README.md"],
+  "files": ["dist", "assets", "README.md"],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
