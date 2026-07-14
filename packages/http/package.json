@@ -1,6 +1,6 @@
 {
   "name": "@weldjs/http",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "End-to-End Type-Safe HTTP client. Offline-first, zero-config, framework agnostic.",
   "type": "module",
   "keywords": [
@@ -26,14 +26,14 @@
     "README.md",
     "LICENSE"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./react": {
       "types": "./dist/react.d.ts",

@@ -21,6 +21,32 @@ import { useWeld } from 'weld-http/react'
 const { data, status, error, loading } = useWeld(weldResponse)
 ```
 
+:::caution[Important]
+Never call `api.get()` directly inside the component body — it creates a new request on every render. Always create the request outside the component or memoize it:
+
+```tsx
+// ✅ Outside the component (static, no deps)
+const productsRequest = api.get('v1/products', z.array(ProductSchema))
+
+export function ProductList() {
+  const { data, loading } = useWeld(productsRequest)
+  // ...
+}
+
+// ✅ Inside with useMemo (if deps change)
+export function ProductList({ category }: { category: string }) {
+  const request = useMemo(
+    () => api.get('v1/products', z.array(ProductSchema), { query: { category } }),
+    [category]
+  )
+  const { data, loading } = useWeld(request)
+  // ...
+}
+```
+
+WELD's deduplication prevents duplicate network requests for the same key, but creating many request objects still has a cost.
+:::
+
 ### Returns
 
 | Field | Type | Description |

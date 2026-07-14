@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, type ReactNode, type ComponentType } from 'react'
+import React, { useContext, useEffect, useRef, type ReactNode, type ComponentType } from 'react'
 import { RouterContext } from './context.js'
 
 export interface RouteProps {
@@ -10,8 +10,19 @@ export interface RouteProps {
 }
 
 function matchPath(pattern: string, pathname: string): { matched: boolean; params: Record<string, string> } {
-  const patternParts  = pattern.split('/').filter(Boolean)
-  const pathnameParts = pathname.split('/').filter(Boolean)
+  // Normalize: trim trailing slashes, ensure leading slash
+  const norm = (s: string) => '/' + s.split('/').filter(Boolean).join('/')
+
+  const normalPattern  = norm(pattern)
+  const normalPathname = norm(pathname)
+
+  // Root: exact match
+  if (normalPattern === '/') {
+    return { matched: normalPathname === '/', params: {} }
+  }
+
+  const patternParts  = normalPattern.split('/').filter(Boolean)
+  const pathnameParts = normalPathname.split('/').filter(Boolean)
 
   if (patternParts.length !== pathnameParts.length) {
     return { matched: false, params: {} }
@@ -29,25 +40,25 @@ function matchPath(pattern: string, pathname: string): { matched: boolean; param
     }
   }
 
-  // Handle root
-  if (pattern === '/' && pathname !== '/') return { matched: false, params: {} }
-
   return { matched: true, params }
 }
 
-export function Route({ path, component: Component, children, exact = true }: RouteProps) {
+export function Route({ path, component: Component, children }: RouteProps) {
   const ctx = useContext(RouterContext)
-  if (!ctx) return null
 
-  const { matched, params } = matchPath(path, ctx.pathname)
-  if (!matched) return null
+  // Always call hooks unconditionally — rules of hooks
+  const paramsRef = useRef<Record<string, string>>({})
 
-  // Inject params into context — we mutate the shared ref
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const result = ctx ? matchPath(path, ctx.pathname) : { matched: false, params: {} }
+
   useEffect(() => {
-    ctx.params = params
+    if (ctx && result.matched) {
+      ctx.params = result.params
+    }
   })
 
-  if (Component) return <Component {...params} />
+  if (!ctx || !result.matched) return null
+
+  if (Component) return <Component {...result.params} />
   return <>{children}</>
 }

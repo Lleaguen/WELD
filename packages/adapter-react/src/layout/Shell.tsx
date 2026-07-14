@@ -24,7 +24,14 @@ export const ShellContext = createContext<ShellContextValue | null>(null)
 
 export function useShell(): ShellContextValue {
   const ctx = useContext(ShellContext)
-  if (!ctx) throw new Error('[Weld.Shell] Layout components must be used inside <Weld.Shell>')
+  if (!ctx) throw new Error(
+    '[WELD] Layout components must be used inside <Weld.Shell>.\n' +
+    'Wrap your layout with <Weld.Shell>:\n\n' +
+    '  <Weld.Shell>\n' +
+    '    <Weld.Header />\n' +
+    '    <Weld.Main />\n' +
+    '  </Weld.Shell>'
+  )
   return ctx
 }
 

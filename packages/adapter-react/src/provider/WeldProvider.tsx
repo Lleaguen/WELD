@@ -54,7 +54,14 @@ const WeldContext = createContext<WeldContextValue | null>(null)
 
 export function useWeldContext(): WeldContextValue {
   const ctx = useContext(WeldContext)
-  if (!ctx) throw new Error('[WeldProvider] useWeldContext must be used inside <WeldProvider>')
+  if (!ctx) throw new Error(
+    '[WELD] useWeldContext() called outside <WeldProvider>.\n' +
+    'Wrap your app root with <WeldProvider>:\n\n' +
+    '  import { WeldProvider } from "@weldjs/react"\n\n' +
+    '  <WeldProvider>\n' +
+    '    <App />\n' +
+    '  </WeldProvider>'
+  )
   return ctx
 }
 

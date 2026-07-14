@@ -5,7 +5,7 @@
 import { execSync }           from 'node:child_process'
 import { log, ok, step, c }  from '../utils/print.js'
 import { writeFileSafe, pathExists, resolvePath } from '../utils/fs.js'
-import { getTemplate, type Template } from '../templates/index.js'
+import { getTemplate, copyLogo, type Template } from '../templates/index.js'
 
 export async function cmdCreate(args: string[]): Promise<void> {
   const name     = args[0]
@@ -35,6 +35,10 @@ export async function cmdCreate(args: string[]): Promise<void> {
     await writeFileSafe(`${dest}/${file.path}`, file.content)
     log(`     ${c.dim('+')} ${file.path}`)
   }
+
+  // Copy WELD logo
+  copyLogo(dest)
+  log(`     ${c.dim('+')} src/assets/weld.png`)
 
   step(2, 'Installing dependencies...')
   try {
