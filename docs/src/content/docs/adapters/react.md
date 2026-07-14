@@ -22,29 +22,22 @@ const { data, status, error, loading } = useWeld(weldResponse)
 ```
 
 :::caution[Important]
-Never call `api.get()` directly inside the component body — it creates a new request on every render. Always create the request outside the component or memoize it:
+Never call `api.get()` directly in the component body — it creates a new request on every render. Use the factory overload instead:
 
 ```tsx
-// ✅ Outside the component (static, no deps)
-const productsRequest = api.get('v1/products', z.array(ProductSchema))
+// ✅ Factory overload — memoized automatically
+const { data, loading } = useWeld(() => api.get('v1/products', Schema), [])
 
-export function ProductList() {
-  const { data, loading } = useWeld(productsRequest)
-  // ...
-}
+// ✅ With changing deps
+const { data } = useWeld(() => api.get(`users/${id}`, Schema), [id])
 
-// ✅ Inside with useMemo (if deps change)
-export function ProductList({ category }: { category: string }) {
-  const request = useMemo(
-    () => api.get('v1/products', z.array(ProductSchema), { query: { category } }),
-    [category]
-  )
-  const { data, loading } = useWeld(request)
-  // ...
-}
+// ✅ Or explicit useMemo
+const request = useMemo(() => api.get('v1/products', Schema), [])
+const { data } = useWeld(request)
+
+// ❌ Don't do this — new request object on every render
+const { data } = useWeld(api.get('v1/products', Schema))
 ```
-
-WELD's deduplication prevents duplicate network requests for the same key, but creating many request objects still has a cost.
 :::
 
 ### Returns
