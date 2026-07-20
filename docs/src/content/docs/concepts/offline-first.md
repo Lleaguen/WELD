@@ -50,7 +50,7 @@ WELD listens to the browser's `navigator.onLine` event. When it fires, the queue
 You can trigger a sync manually if needed:
 
 ```ts
-import { syncQueue } from 'weld-http'
+import { syncQueue } from '@weldjs/http'
 
 // Force replay all queued mutations now
 await syncQueue()

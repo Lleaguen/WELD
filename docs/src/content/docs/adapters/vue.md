@@ -1,6 +1,6 @@
 ---
 title: Vue Adapter
-description: Using weld-http with Vue 3
+description: Using @weldjs/http with Vue 3
 ---
 
 The Vue adapter converts WELD signals into Vue `ShallowRef` objects using direct signal subscriptions. Subscriptions are cleaned up automatically when the component unmounts via `onUnmounted`.
@@ -10,13 +10,13 @@ The Vue adapter converts WELD signals into Vue `ShallowRef` objects using direct
 Vue 3.3+ is required as a peer dependency.
 
 ```bash
-npm install weld-http zod
+npm install @weldjs/http zod
 ```
 
 ## useWeld()
 
 ```ts
-import { useWeld } from 'weld-http/vue'
+import { useWeld } from '@weldjs/http/vue'
 
 const { data, status, error, loading } = useWeld(weldResponse)
 ```
@@ -34,8 +34,8 @@ const { data, status, error, loading } = useWeld(weldResponse)
 
 ```vue
 <script setup lang="ts">
-import { Weld } from 'weld-http'
-import { useWeld } from 'weld-http/vue'
+import { Weld } from '@weldjs/http'
+import { useWeld } from '@weldjs/http/vue'
 import { z } from 'zod'
 
 const api = new Weld('https://api.example.com')

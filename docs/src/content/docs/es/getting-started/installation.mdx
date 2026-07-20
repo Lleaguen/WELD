@@ -1,6 +1,6 @@
 ---
 title: Instalación
-description: Cómo instalar weld-http en tu proyecto
+description: Cómo instalar @weldjs/http y los paquetes relacionados
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components'
@@ -12,52 +12,66 @@ WELD requiere `zod` como peer dependency para la validación en runtime.
 <Tabs>
   <TabItem label="npm">
 ```bash
-npm install weld-http zod
+npm install @weldjs/http zod
 ```
   </TabItem>
   <TabItem label="pnpm">
 ```bash
-pnpm add weld-http zod
+pnpm add @weldjs/http zod
 ```
   </TabItem>
   <TabItem label="yarn">
 ```bash
-yarn add weld-http zod
+yarn add @weldjs/http zod
 ```
   </TabItem>
   <TabItem label="bun">
 ```bash
-bun add weld-http zod
+bun add @weldjs/http zod
 ```
   </TabItem>
 </Tabs>
 
-## Adaptadores de Framework
+## React — Componentes UI + hooks
 
-Todos los adaptadores son opcionales — instalá solo el que necesita tu framework.
+Instalá `@weldjs/react` para la librería completa de componentes (`Weld.Shell`, `Weld.Button`, `Weld.Table`, etc.) y el hook `useWeld`.
+
+```bash
+npm install @weldjs/react zod
+```
+
+```ts
+import { Weld, WeldProvider, useWeld } from '@weldjs/react'
+```
+
+Requiere `react >= 18` como peer dependency.
+
+## Adaptadores de Framework (solo HTTP)
+
+Si solo necesitás el cliente HTTP sin los componentes UI, usá los subpath adapters:
 
 <Tabs>
-  <TabItem label="React">
+  <TabItem label="React (solo hook)">
 ```ts
-import { useWeld } from 'weld-http/react'
+import { useWeld } from '@weldjs/http/react'
 ```
 Requiere `react >= 18` como peer dependency.
   </TabItem>
   <TabItem label="Vue">
 ```ts
-import { useWeld } from 'weld-http/vue'
+import { useWeld } from '@weldjs/http/vue'
 ```
 Requiere `vue >= 3.3` como peer dependency.
   </TabItem>
   <TabItem label="SolidJS">
 ```ts
-import { useWeld } from 'weld-http/solid'
+import { useWeld } from '@weldjs/http/solid'
 ```
 Requiere `solid-js >= 1.8` como peer dependency.
   </TabItem>
   <TabItem label="Angular">
 ```ts
-import { toObservable } from 'weld-http/angular'
+import { toObservable } from '@weldjs/http/angular'
 ```
 Requiere `rxjs >= 7` como peer dependency.
   </TabItem>
@@ -66,11 +80,11 @@ Requiere `rxjs >= 7` como peer dependency.
 ## Requisitos
 
 | Runtime | Versión mínima |
-|---------|---------------|
+|---------|----------------|
 | Node.js | 18+ |
 | Bun     | 1.0+ |
 | Deno    | 1.30+ |
-| Browser | Cualquier navegador moderno con `fetch` e `IndexedDB` |
+| Browser | Cualquier browser moderno con `fetch` e `IndexedDB` |
 
 ## TypeScript
 
@@ -86,3 +100,15 @@ Configuración recomendada de `tsconfig.json`:
   }
 }
 ```
+
+## Scaffold rápido
+
+La forma más rápida de empezar es con la herramienta de scaffold:
+
+```bash
+npm create weld-app@latest mi-app
+cd mi-app
+npm run dev
+```
+
+Esto configura un proyecto completo con `@weldjs/react`, Vite y TypeScript.

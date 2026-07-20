@@ -39,7 +39,7 @@ Esta es la opción correcta para prototipos rápidos o cuando confiás completam
 ## Manejo de errores de validación
 
 ```ts
-import { WeldValidationError } from 'weld-http'
+import { WeldValidationError } from '@weldjs/http'
 
 try {
   const products = await api.get('v1/products', z.array(ProductSchema)).promise

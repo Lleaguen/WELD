@@ -1,6 +1,6 @@
 ---
 title: Adaptador Angular
-description: Usando weld-http con Angular a través de Observables RxJS
+description: Using @weldjs/http with Angular a través de Observables RxJS
 ---
 
 El adaptador Angular convierte las señales WELD en streams `Observable` de RxJS. Usalos con el pipe `async` en templates o suscribite directamente en servicios.
@@ -10,13 +10,13 @@ El adaptador Angular convierte las señales WELD en streams `Observable` de RxJS
 Se requiere rxjs 7+ como peer dependency.
 
 ```bash
-npm install weld-http zod rxjs
+npm install @weldjs/http zod rxjs
 ```
 
 ## toObservable()
 
 ```ts
-import { toObservable } from 'weld-http/angular'
+import { toObservable } from '@weldjs/http/angular'
 
 const { data$, status$, error$, loading$ } = toObservable(weldResponse)
 ```
@@ -38,8 +38,8 @@ Cada Observable **emite inmediatamente** con el valor actual y luego en cada cam
 // products.component.ts
 import { Component } from '@angular/core'
 import { AsyncPipe, NgFor, NgIf } from '@angular/common'
-import { Weld } from 'weld-http'
-import { toObservable } from 'weld-http/angular'
+import { Weld } from '@weldjs/http'
+import { toObservable } from '@weldjs/http/angular'
 import { z } from 'zod'
 
 const api = new Weld('https://api.ejemplo.com')

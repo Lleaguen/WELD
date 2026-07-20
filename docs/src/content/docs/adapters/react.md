@@ -1,6 +1,6 @@
 ---
 title: React Adapter
-description: Using weld-http with React 18+
+description: Using @weldjs/http with React 18+
 ---
 
 The React adapter bridges WELD signals to React's rendering cycle using `useSyncExternalStore` — the official React 18 API for subscribing to external stores. This means WELD integrates correctly with Concurrent Mode and Suspense without any extra configuration.
@@ -10,13 +10,13 @@ The React adapter bridges WELD signals to React's rendering cycle using `useSync
 React 18+ is required as a peer dependency.
 
 ```bash
-npm install weld-http zod
+npm install @weldjs/http zod
 ```
 
 ## useWeld()
 
 ```tsx
-import { useWeld } from 'weld-http/react'
+import { useWeld } from '@weldjs/http/react'
 
 const { data, status, error, loading } = useWeld(weldResponse)
 ```
@@ -52,8 +52,8 @@ const { data } = useWeld(api.get('v1/products', Schema))
 ## Example
 
 ```tsx
-import { Weld } from 'weld-http'
-import { useWeld } from 'weld-http/react'
+import { Weld } from '@weldjs/http'
+import { useWeld } from '@weldjs/http/react'
 import { z } from 'zod'
 
 const api = new Weld('https://api.example.com')

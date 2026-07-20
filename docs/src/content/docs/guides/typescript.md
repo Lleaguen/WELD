@@ -18,7 +18,7 @@ export type AppRouter = {
 
 // frontend/src/lib/api.ts
 import type { AppRouter } from '../../backend/src/router'
-import { Weld } from 'weld-http'
+import { Weld } from '@weldjs/http'
 
 export const api = new Weld<AppRouter>('https://api.example.com')
 ```
@@ -30,7 +30,7 @@ Now if the backend changes `Product`, the frontend **fails to compile immediatel
 Use the built-in type helpers to derive types without duplicating them:
 
 ```ts
-import type { InferResponse, InferBody } from 'weld-http'
+import type { InferResponse, InferBody } from '@weldjs/http'
 
 // The response type of a GET
 type Products = InferResponse<AppRouter, 'v1/products', 'GET'>
@@ -85,7 +85,7 @@ Create a single typed client instance and export it across your app:
 
 ```ts
 // lib/api.ts
-import { Weld } from 'weld-http'
+import { Weld } from '@weldjs/http'
 import type { AppRouter } from '../types/router'
 
 export const api = new Weld<AppRouter>(

@@ -61,7 +61,7 @@ export type AppRouter = { ... }
 
 // frontend/src/lib/api.ts
 import type { AppRouter } from '../../backend/src/router'
-import { Weld } from 'weld-http'
+import { Weld } from '@weldjs/http'
 
 export const api = new Weld<AppRouter>('https://api.example.com')
 ```
@@ -73,7 +73,7 @@ Ahora si el backend cambia una ruta, el frontend **falla en compilar** inmediata
 WELD exporta tipos utilitarios para extraer partes del contrato:
 
 ```ts
-import type { InferResponse, InferBody, InferQuery } from 'weld-http'
+import type { InferResponse, InferBody, InferQuery } from '@weldjs/http'
 
 // Extraer el tipo de respuesta de una ruta
 type Products = InferResponse<AppRouter, 'v1/products', 'GET'>

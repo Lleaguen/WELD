@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: How to install weld-http in your project
+description: How to install @weldjs/http and related packages
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components'
@@ -12,52 +12,66 @@ WELD requires `zod` as a peer dependency for runtime validation.
 <Tabs>
   <TabItem label="npm">
 ```bash
-npm install weld-http zod
+npm install @weldjs/http zod
 ```
   </TabItem>
   <TabItem label="pnpm">
 ```bash
-pnpm add weld-http zod
+pnpm add @weldjs/http zod
 ```
   </TabItem>
   <TabItem label="yarn">
 ```bash
-yarn add weld-http zod
+yarn add @weldjs/http zod
 ```
   </TabItem>
   <TabItem label="bun">
 ```bash
-bun add weld-http zod
+bun add @weldjs/http zod
 ```
   </TabItem>
 </Tabs>
 
-## Framework Adapters
+## React — UI components + hooks
 
-All adapters are optional — install only what your framework needs.
+Install `@weldjs/react` for the full component library (`Weld.Shell`, `Weld.Button`, `Weld.Table`, etc.) and the `useWeld` hook.
+
+```bash
+npm install @weldjs/react zod
+```
+
+```ts
+import { Weld, WeldProvider, useWeld } from '@weldjs/react'
+```
+
+Requires `react >= 18` as a peer dependency.
+
+## Framework Adapters (HTTP only)
+
+If you only need the HTTP client without the UI components, use the subpath adapters:
 
 <Tabs>
-  <TabItem label="React">
+  <TabItem label="React (hook only)">
 ```ts
-import { useWeld } from 'weld-http/react'
+import { useWeld } from '@weldjs/http/react'
 ```
 Requires `react >= 18` as a peer dependency.
   </TabItem>
   <TabItem label="Vue">
 ```ts
-import { useWeld } from 'weld-http/vue'
+import { useWeld } from '@weldjs/http/vue'
 ```
 Requires `vue >= 3.3` as a peer dependency.
   </TabItem>
   <TabItem label="SolidJS">
 ```ts
-import { useWeld } from 'weld-http/solid'
+import { useWeld } from '@weldjs/http/solid'
 ```
 Requires `solid-js >= 1.8` as a peer dependency.
   </TabItem>
   <TabItem label="Angular">
 ```ts
-import { toObservable } from 'weld-http/angular'
+import { toObservable } from '@weldjs/http/angular'
 ```
 Requires `rxjs >= 7` as a peer dependency.
   </TabItem>
@@ -86,3 +100,15 @@ Recommended `tsconfig.json` settings:
   }
 }
 ```
+
+## Quick scaffold
+
+The fastest way to start is with the scaffold tool:
+
+```bash
+npm create weld-app@latest my-app
+cd my-app
+npm run dev
+```
+
+This sets up a full project with `@weldjs/react`, Vite, and TypeScript configured.

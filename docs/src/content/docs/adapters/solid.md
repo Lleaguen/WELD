@@ -1,6 +1,6 @@
 ---
 title: SolidJS Adapter
-description: Using weld-http with SolidJS
+description: Using @weldjs/http with SolidJS
 ---
 
 The SolidJS adapter is the most natural fit for WELD — since Solid uses fine-grained signals natively, the bridge is minimal. WELD signals map directly to Solid `createSignal` with `onCleanup` handling the subscription lifecycle.
@@ -10,13 +10,13 @@ The SolidJS adapter is the most natural fit for WELD — since Solid uses fine-g
 solid-js 1.8+ is required as a peer dependency.
 
 ```bash
-npm install weld-http zod
+npm install @weldjs/http zod
 ```
 
 ## useWeld()
 
 ```ts
-import { useWeld } from 'weld-http/solid'
+import { useWeld } from '@weldjs/http/solid'
 
 const { data, status, error, loading } = useWeld(weldResponse)
 ```
@@ -33,8 +33,8 @@ const { data, status, error, loading } = useWeld(weldResponse)
 ## Example
 
 ```tsx
-import { Weld } from 'weld-http'
-import { useWeld } from 'weld-http/solid'
+import { Weld } from '@weldjs/http'
+import { useWeld } from '@weldjs/http/solid'
 import { z } from 'zod'
 
 const api = new Weld('https://api.example.com')

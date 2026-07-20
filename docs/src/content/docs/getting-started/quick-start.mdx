@@ -51,7 +51,7 @@ export const ProductArraySchema = z.array(ProductSchema)
 
 ```ts
 // lib/api.ts
-import { Weld } from 'weld-http'
+import { Weld } from '@weldjs/http'
 import type { AppRouter } from '../types/api'
 
 export const api = new Weld<AppRouter>('https://api.example.com', {
@@ -82,7 +82,7 @@ signal.data.subscribe((data)     => console.log('Data:', data))
 <Tabs>
   <TabItem label="React">
 ```tsx
-import { useWeld } from 'weld-http/react'
+import { useWeld } from '@weldjs/http/react'
 import { api } from '../lib/api'
 import { ProductArraySchema } from '../schemas/product'
 
@@ -109,7 +109,7 @@ export function ProductList() {
   <TabItem label="Vue">
 ```vue
 <script setup lang="ts">
-import { useWeld } from 'weld-http/vue'
+import { useWeld } from '@weldjs/http/vue'
 import { api } from '../lib/api'
 import { ProductArraySchema } from '../schemas/product'
 
@@ -131,7 +131,7 @@ const { data, loading, error } = useWeld(
   </TabItem>
   <TabItem label="SolidJS">
 ```tsx
-import { useWeld } from 'weld-http/solid'
+import { useWeld } from '@weldjs/http/solid'
 import { api } from '../lib/api'
 import { ProductArraySchema } from '../schemas/product'
 

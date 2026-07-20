@@ -1,6 +1,6 @@
 {
   "name": "@weldjs/http",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "End-to-End Type-Safe HTTP client. Offline-first, zero-config, framework agnostic.",
   "type": "module",
   "keywords": [
@@ -37,23 +37,23 @@
     },
     "./react": {
       "types": "./dist/react.d.ts",
-      "import": "./dist/react.mjs",
-      "require": "./dist/react.js"
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
     },
     "./vue": {
       "types": "./dist/vue.d.ts",
-      "import": "./dist/vue.mjs",
-      "require": "./dist/vue.js"
+      "import": "./dist/vue.js",
+      "require": "./dist/vue.cjs"
     },
     "./solid": {
       "types": "./dist/solid.d.ts",
-      "import": "./dist/solid.mjs",
-      "require": "./dist/solid.js"
+      "import": "./dist/solid.js",
+      "require": "./dist/solid.cjs"
     },
     "./angular": {
       "types": "./dist/angular.d.ts",
-      "import": "./dist/angular.mjs",
-      "require": "./dist/angular.js"
+      "import": "./dist/angular.js",
+      "require": "./dist/angular.cjs"
     }
   },
   "scripts": {

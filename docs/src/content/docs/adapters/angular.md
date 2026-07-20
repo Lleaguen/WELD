@@ -1,6 +1,6 @@
 ---
 title: Angular Adapter
-description: Using weld-http with Angular via RxJS Observables
+description: Using @weldjs/http with Angular via RxJS Observables
 ---
 
 The Angular adapter converts WELD signals into RxJS `Observable` streams. Use them with the `async` pipe in templates or subscribe directly in services.
@@ -10,13 +10,13 @@ The Angular adapter converts WELD signals into RxJS `Observable` streams. Use th
 rxjs 7+ is required as a peer dependency.
 
 ```bash
-npm install weld-http zod rxjs
+npm install @weldjs/http zod rxjs
 ```
 
 ## toObservable()
 
 ```ts
-import { toObservable } from 'weld-http/angular'
+import { toObservable } from '@weldjs/http/angular'
 
 const { data$, status$, error$, loading$ } = toObservable(weldResponse)
 ```
@@ -38,8 +38,8 @@ Each Observable **emits immediately** with the current value and then on every s
 // products.component.ts
 import { Component } from '@angular/core'
 import { AsyncPipe, NgFor, NgIf } from '@angular/common'
-import { Weld } from 'weld-http'
-import { toObservable } from 'weld-http/angular'
+import { Weld } from '@weldjs/http'
+import { toObservable } from '@weldjs/http/angular'
 import { z } from 'zod'
 
 const api = new Weld('https://api.example.com')
@@ -75,7 +75,7 @@ export class ProductsComponent {
 ```ts
 // products.service.ts
 import { Injectable } from '@angular/core'
-import { toObservable } from 'weld-http/angular'
+import { toObservable } from '@weldjs/http/angular'
 
 @Injectable({ providedIn: 'root' })
 export class ProductsService {

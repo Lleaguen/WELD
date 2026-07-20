@@ -43,7 +43,7 @@ Type: `WeldClientConfig` — optional
 ### Minimal setup
 
 ```ts
-import { Weld } from 'weld-http'
+import { Weld } from '@weldjs/http'
 
 const api = new Weld('https://api.example.com')
 ```

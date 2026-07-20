@@ -39,7 +39,7 @@ This is the right choice for quick prototypes or when you trust the API complete
 ## Handling validation errors
 
 ```ts
-import { WeldValidationError } from 'weld-http'
+import { WeldValidationError } from '@weldjs/http'
 
 try {
   const products = await api.get('v1/products', z.array(ProductSchema)).promise

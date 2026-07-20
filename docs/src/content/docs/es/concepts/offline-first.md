@@ -50,7 +50,7 @@ WELD escucha el evento `navigator.onLine` del browser. Cuando se dispara, el pro
 Podés disparar una sincronización manual si es necesario:
 
 ```ts
-import { syncQueue } from 'weld-http'
+import { syncQueue } from '@weldjs/http'
 
 // Forzar la reproducción de todas las mutaciones encoladas ahora
 await syncQueue()
