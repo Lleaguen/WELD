@@ -1,45 +1,40 @@
 ---
 title: Introduction
-description: What is WELD and why does it exist?
+description: What is WELD? A plain-language overview for developers coming from HTML/CSS/JS.
 ---
 
-WELD is a TypeScript-native HTTP client built around a single idea: **the contract between your backend and frontend should be enforced automatically**, not maintained by hand.
+## What is WELD?
 
-## The Problem
+WELD is a toolkit for building web apps with React. It gives you a set of ready-made UI components (header, sidebar, buttons, forms, modals…) and a smart way to fetch data from your backend — one that automatically handles loading states, caches responses for offline use, and catches errors before they reach your users. You write less code, and the code you do write is harder to get wrong.
 
-Every frontend application faces the same cycle:
+## What do you get?
 
-1. Backend changes a response shape
-2. Frontend keeps reading the old shape
-3. UI silently renders wrong data or crashes at runtime
-4. Developer spends hours debugging
+- **UI components** — pre-built layout pieces like `Weld.Shell`, `Weld.Header`, `Weld.Sidebar`, and `Weld.Footer`. Drop them in and your app has a solid structure immediately.
+- **Data fetching** — one hook (`useWeld`) replaces all your `fetch` + `useEffect` + `useState` boilerplate. Loading and error states are automatic.
+- **Offline support** — if the user loses their internet connection, the last successful response is served from a local cache. No extra work required.
+- **Type safety** — if your backend changes a field name or removes an endpoint, TypeScript tells you before your app even runs.
+- **Validation** — responses from the server are checked against a schema at runtime, so bad data never reaches your components silently.
+- **Client-side routing** — a `WeldRouter` with nested routes, URL params, and protected routes.
+- **Forms** — a `useForm` hook with built-in validation and error display.
 
-Type assertions like `as User` don't help — they lie at runtime. And adding manual validation everywhere is tedious and error-prone.
+## Who is it for?
 
-## The Solution
+WELD is a good fit if you:
 
-WELD solves this with four pillars working together in a single pipeline:
+- Know the basics of HTML, CSS, and JavaScript and want to build something real with React.
+- Are tired of wiring up loading spinners and error messages by hand.
+- Want your app to still work (or at least not crash) when the network is slow or gone.
+- Are working on a team where the backend and frontend are separate, and you want both sides to stay in sync automatically.
 
-| Pillar | What it does |
-|--------|-------------|
-| **E2E Type Safety** | Your backend router type flows into every request. Wrong paths, wrong bodies, and wrong query params break at **compile time**. |
-| **Runtime Validation** | Zod schemas validate the actual response at the network boundary. No more silent data corruption. |
-| **Offline-First** | GET requests fall back to IndexedDB cache when offline. Mutations queue locally and replay when the network restores. |
-| **Request Deduplication** | Concurrent requests for the same resource share one in-flight Promise. No duplicate server hits. |
+You do **not** need to know what tRPC, Hexagonal Architecture, or `useSyncExternalStore` means to use WELD. Those are things WELD handles for you under the hood.
 
-## Philosophy
+## What you need to know first
 
-WELD follows **Progressive Complexity** — it's as simple as a direct `fetch()` call for a landing page, and scales up to enterprise hexagonal architecture without changing your mental model.
+- **TypeScript basics** — you should be comfortable writing types and interfaces. If you know JavaScript well, TypeScript is a short learning curve.
+- **React basics** — components, props, and hooks (`useState`, `useEffect`). The [React docs](https://react.dev/learn) cover this in a few hours.
 
-```ts
-// Zero-config — just works
-const { promise } = api.get('v1/products')
+That's it. WELD does the rest.
 
-// Full power — type-safe, validated, offline-resilient
-const { signal, promise } = api.get('v1/products', z.array(ProductSchema), {
-  offlineFallback: true,
-  retry: { attempts: 3, delay: 300 },
-})
-```
+## Next step
 
-Same API. Same client. Different levels of safety depending on what your project needs.
+→ [Installation](/getting-started/installation)

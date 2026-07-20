@@ -47,7 +47,8 @@ const ProductSchema = z.object({
 
 export function ProductList() {
   const { data, loading, error } = useWeld(
-    api.get('v1/products', z.array(ProductSchema))
+    () => api.get('v1/products', z.array(ProductSchema)),
+    []
   )
 
   if (loading) return <p>Cargando productos...</p>
@@ -67,11 +68,15 @@ export function ProductList() {
 
 ## Cancelación
 
+Dentro de `useEffect` es el lugar correcto para llamadas directas a `api.get()` —
+tenés control del ciclo de vida y podés llamar a `abort()` al limpiar.
+
 ```tsx
 import { useEffect } from 'react'
 
 export function ProductList() {
   useEffect(() => {
+    // ✅ api.get() directo está bien aquí — useEffect controla el ciclo de vida
     const { promise, abort } = api.get('v1/products', z.array(ProductSchema))
     promise.then(console.log).catch(console.error)
 

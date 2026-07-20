@@ -113,6 +113,7 @@ export default defineConfig({
           label: 'Guides',
           translations: { es: 'Guías' },
           items: [
+            { label: 'From HTML to WELD',      translations: { es: 'De HTML a WELD' },         slug: 'guides/from-html' },
             { label: 'Hexagonal Architecture', translations: { es: 'Arquitectura Hexagonal' }, slug: 'guides/hexagonal' },
             { label: 'TypeScript Tips',        translations: { es: 'Tips de TypeScript' },     slug: 'guides/typescript' },
           ],

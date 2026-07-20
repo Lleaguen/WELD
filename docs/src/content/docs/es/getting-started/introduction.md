@@ -1,45 +1,40 @@
 ---
 title: Introducción
-description: Qué es WELD y por qué existe
+description: ¿Qué es WELD? Una descripción en lenguaje simple para developers que vienen de HTML/CSS/JS.
 ---
 
-WELD es un cliente HTTP nativo de TypeScript construido sobre una idea central: **el contrato entre tu backend y tu frontend debe aplicarse automáticamente**, no mantenerse a mano.
+## ¿Qué es WELD?
 
-## El problema
+WELD es un conjunto de herramientas para construir aplicaciones web con React. Te da componentes de UI ya listos (header, sidebar, botones, formularios, modales…) y una forma inteligente de obtener datos de tu backend — una que maneja automáticamente los estados de carga, guarda respuestas en caché para uso sin conexión, y detecta errores antes de que lleguen a tus usuarios. Escribís menos código, y el código que escribís es más difícil de hacer mal.
 
-Cada aplicación frontend enfrenta el mismo ciclo:
+## ¿Qué obtenés?
 
-1. El backend cambia la forma de una respuesta
-2. El frontend sigue leyendo la forma antigua
-3. La UI renderiza datos incorrectos o falla en runtime
-4. El developer pasa horas debuggeando
+- **Componentes UI** — piezas de layout ya construidas como `Weld.Shell`, `Weld.Header`, `Weld.Sidebar` y `Weld.Footer`. Los agregás y tu app tiene una estructura sólida de inmediato.
+- **Fetching de datos** — un solo hook (`useWeld`) reemplaza todo el boilerplate de `fetch` + `useEffect` + `useState`. Los estados de carga y error son automáticos.
+- **Soporte offline** — si el usuario pierde la conexión, la última respuesta exitosa se sirve desde un caché local. Sin trabajo extra de tu parte.
+- **Seguridad de tipos** — si tu backend cambia el nombre de un campo o elimina un endpoint, TypeScript te avisa antes de que tu app siquiera corra.
+- **Validación** — las respuestas del servidor se verifican contra un esquema en tiempo de ejecución, así los datos incorrectos nunca llegan a tus componentes en silencio.
+- **Enrutamiento del lado del cliente** — un `WeldRouter` con rutas anidadas, parámetros de URL y rutas protegidas.
+- **Formularios** — un hook `useForm` con validación integrada y visualización de errores.
 
-Las aserciones de tipo como `as User` no ayudan — mienten en runtime. Y agregar validación manual en todos lados es tedioso y propenso a errores.
+## ¿Para quién es?
 
-## La solución
+WELD es una buena opción si:
 
-WELD resuelve esto con cuatro pilares que trabajan juntos en un único pipeline:
+- Conocés los fundamentos de HTML, CSS y JavaScript y querés construir algo real con React.
+- Estás cansado de armar spinners de carga y mensajes de error a mano.
+- Querés que tu app siga funcionando (o al menos no crashee) cuando la red es lenta o no existe.
+- Trabajás en un equipo donde el backend y el frontend son separados, y querés que ambos lados se mantengan sincronizados automáticamente.
 
-| Pilar | Qué hace |
-|-------|----------|
-| **Seguridad de Tipos E2E** | El tipo del router de tu backend fluye a cada petición. Rutas incorrectas, cuerpos incorrectos y query params incorrectos fallan en **tiempo de compilación**. |
-| **Validación en Runtime** | Los esquemas de Zod validan la respuesta real en la frontera de la red. Sin más corrupción silenciosa de datos. |
-| **Offline-First** | Las peticiones GET recurren al caché de IndexedDB cuando no hay red. Las mutaciones se encolan localmente y se reenvían automáticamente cuando la red se restaura. |
-| **Deduplicación de Peticiones** | Las peticiones concurrentes al mismo recurso comparten una única Promise en vuelo. Sin hits duplicados al servidor. |
+**No necesitás** saber qué es tRPC, Arquitectura Hexagonal o `useSyncExternalStore` para usar WELD. Son cosas que WELD maneja por vos debajo del capó.
 
-## Filosofía
+## Qué necesitás saber primero
 
-WELD sigue la **Complejidad Progresiva** — es tan simple como una llamada directa a `fetch()` para una landing page, y escala hasta arquitectura hexagonal empresarial sin cambiar el modelo mental.
+- **Fundamentos de TypeScript** — deberías estar cómodo escribiendo tipos e interfaces. Si conocés bien JavaScript, TypeScript es una curva de aprendizaje corta.
+- **Fundamentos de React** — componentes, props y hooks (`useState`, `useEffect`). La [documentación de React](https://react.dev/learn) cubre esto en pocas horas.
 
-```ts
-// Zero-config — simplemente funciona
-const { promise } = api.get('v1/products')
+Eso es todo. WELD hace el resto.
 
-// Potencia completa — seguro en tipos, validado, resiliente offline
-const { signal, promise } = api.get('v1/products', z.array(ProductSchema), {
-  offlineFallback: true,
-  retry: { attempts: 3, delay: 300 },
-})
-```
+## Siguiente paso
 
-Misma API. Mismo cliente. Diferentes niveles de seguridad según lo que tu proyecto necesite.
+→ [Instalación](/es/getting-started/installation)

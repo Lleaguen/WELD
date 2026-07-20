@@ -9,6 +9,29 @@ Instalar:
 npm install @weldjs/router
 ```
 
+## Árbol de Proveedores
+
+Cada app WELD sigue esta estructura. Equivocarse aquí es la fuente de errores más común:
+
+```
+<WeldProvider>          ← Requerido. Envuelve toda tu app. Provee tema + contexto.
+  <Weld.Shell>          ← Layout raíz. Define fondo oscuro + flex de altura completa.
+    <Weld.Header />     ← Barra superior fija.
+    <WeldRouter>        ← Enrutamiento del lado del cliente.
+      <Route path="/" component={Home} />
+    </WeldRouter>
+    <Weld.Footer />     ← Barra inferior.
+    <Weld.ToastProvider />  ← Notificaciones toast (colocar dentro del Shell, después del contenido).
+  </Weld.Shell>
+</WeldProvider>
+```
+
+:::caution[Error común]
+`Weld.Header`, `Weld.Sidebar`, `Weld.Main` y `Weld.Footer` deben estar **dentro** de `<Weld.Shell>`.  
+`Weld.Shell` debe estar **dentro** de `<WeldProvider>`.  
+Si ves un error sobre "useWeldContext" o "useShell", revisá este árbol.
+:::
+
 ## Configuración básica
 
 Envolvé tu app con `WeldRouter` dentro de tu `Shell`:
