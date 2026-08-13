@@ -20,7 +20,6 @@ export { Button }  from './components/Button.js'
 export { Input }   from './components/Input.js'
 export type { WeldButtonProps } from './components/Button.js'
 export type { WeldInputProps }  from './components/Input.js'
-
 // ── Layout ─────────────────────────────────────────────────────────────────────
 export { Shell }   from './layout/Shell.js'
 export { Header }  from './layout/Header.js'
@@ -88,6 +87,9 @@ export type { WeldTabsProps, WeldTabItem }      from './components/Tabs.js'
 // ── Hooks ──────────────────────────────────────────────────────────────────────
 export { useResponsive } from './hooks/useResponsive.js'
 export type { Breakpoint } from './hooks/useResponsive.js'
+
+export { useTilt3D } from './hooks/useTilt3D.js'
+export type { TiltProp, TiltConfig, UseTilt3DResult } from './hooks/useTilt3D.js'
 
 // ── Theme ──────────────────────────────────────────────────────────────────────
 export type { WeldTokens } from './theme/tokens.js'

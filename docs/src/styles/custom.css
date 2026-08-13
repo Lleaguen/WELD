@@ -1,355 +1,754 @@
 /* ═══════════════════════════════════════════════════════════
-   WELD — Design System
-   Based on the logo: black + cyan neon + indigo/violet + weld point
+   WELD — Documentation Design System
+   Dark with depth. Neon on purpose.
    ═══════════════════════════════════════════════════════════ */
 
-/* ── Import Inter font — must be first ──────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* ── Fonts ───────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ── Brand tokens ────────────────────────────────────────── */
 :root {
-  --weld-black:        #000000;
-  --weld-surface:      #0a0a0a;
-  --weld-elevated:     #111111;
-  --weld-border:       rgba(255, 255, 255, 0.06);
-  --weld-border-glow:  rgba(0, 229, 255, 0.2);
+  /* Backgrounds — layered darkness, not flat black */
+  --weld-bg:           #07080a;   /* page base */
+  --weld-bg-surface:   #0c0d11;   /* content area, cards */
+  --weld-bg-elevated:  #12141a;   /* hover states, code blocks */
+  --weld-bg-sidebar:   #09090d;   /* sidebar */
+  --weld-bg-nav:       #07080a;   /* top nav */
 
-  /* Neon cyan — left stroke of the W */
-  --weld-cyan:         #00e5ff;
-  --weld-cyan-dim:     rgba(0, 229, 255, 0.15);
-  --weld-cyan-glow:    0 0 20px rgba(0, 229, 255, 0.4), 0 0 60px rgba(0, 229, 255, 0.15);
+  /* Neon plasma — the identity */
+  --weld-cyan:         #00d4ff;
+  --weld-cyan-bright:  #33ddff;
+  --weld-cyan-dim:     rgba(0, 212, 255, 0.12);
+  --weld-cyan-glow:    0 0 16px rgba(0, 212, 255, 0.35), 0 0 48px rgba(0, 212, 255, 0.12);
+  --weld-cyan-glow-sm: 0 0 8px rgba(0, 212, 255, 0.25);
 
-  /* Indigo/violet — right stroke of the W */
-  --weld-indigo:       #6366f1;
-  --weld-violet:       #818cf8;
-  --weld-indigo-glow:  0 0 20px rgba(99, 102, 241, 0.4);
+  --weld-cobalt:       #3b6bff;
+  --weld-cobalt-dim:   rgba(59, 107, 255, 0.12);
+  --weld-violet:       #7c3aed;
 
-  /* Weld point — the hot fusion at the center */
-  --weld-point:        #ffd700;
-  --weld-point-warm:   #ff9d7a;
+  /* Gradient — the full weld arc */
+  --weld-gradient:      linear-gradient(135deg, #00d4ff 0%, #3b6bff 60%, #7c3aed 100%);
+  --weld-gradient-text: linear-gradient(135deg, #00d4ff 0%, #7c9fff 100%);
+  --weld-gradient-glow: linear-gradient(135deg,
+    rgba(0, 212, 255, 0.15) 0%,
+    rgba(59, 107, 255, 0.08) 60%,
+    rgba(124, 58, 237, 0.05) 100%
+  );
+
+  /* Borders — visible but not dominant */
+  --weld-border:        rgba(255, 255, 255, 0.08);
+  --weld-border-strong: rgba(255, 255, 255, 0.13);
+  --weld-border-cyan:   rgba(0, 212, 255, 0.22);
+  --weld-border-active: rgba(0, 212, 255, 0.45);
 
   /* Text */
-  --weld-text:         #f8fafc;
-  --weld-text-muted:   #64748b;
-  --weld-text-subtle:  #334155;
+  --weld-text:          #eeeef0;
+  --weld-text-secondary:#a1a1aa;
+  --weld-text-muted:    #52525b;
+  --weld-text-subtle:   #3f3f46;
 
-  /* Gradient — cyan to indigo, the full W stroke */
-  --weld-gradient: linear-gradient(135deg, #00e5ff 0%, #6366f1 50%, #818cf8 100%);
-  --weld-gradient-text: linear-gradient(135deg, #00e5ff 0%, #a5b4fc 100%);
+  /* Semantic */
+  --weld-success:  #22c55e;
+  --weld-warning:  #f59e0b;
+  --weld-error:    #ef4444;
 }
 
-/* ── Override Starlight with WELD identity ───────────────── */
-
-/* Accent = cyan */
+/* ── Starlight token overrides ───────────────────────────── */
 :root {
-  --sl-color-accent-low:  #001a1f;
-  --sl-color-accent:      #00e5ff;
-  --sl-color-accent-high: #67f3ff;
+  --sl-color-accent-low:  rgba(0, 212, 255, 0.1);
+  --sl-color-accent:      #00d4ff;
+  --sl-color-accent-high: #66e5ff;
 
-  --sl-color-bg:          #000000;
-  --sl-color-bg-nav:      #000000;
-  --sl-color-bg-sidebar:  #030303;
-  --sl-color-hairline:    rgba(255,255,255,0.06);
+  --sl-color-bg:          var(--weld-bg);
+  --sl-color-bg-nav:      var(--weld-bg-nav);
+  --sl-color-bg-sidebar:  var(--weld-bg-sidebar);
+  --sl-color-hairline:    var(--weld-border);
+  --sl-color-text:        var(--weld-text);
+  --sl-color-text-accent: var(--weld-cyan);
 
-  --sl-color-white:       #f8fafc;
-  --sl-color-gray-1:      #94a3b8;
-  --sl-color-gray-2:      #64748b;
-  --sl-color-gray-3:      #334155;
-  --sl-color-gray-4:      #1e293b;
-  --sl-color-gray-5:      #0f172a;
-  --sl-color-gray-6:      #050a12;
-  --sl-color-black:       #000000;
+  --sl-color-white:   #eeeef0;
+  --sl-color-gray-1:  #a1a1aa;
+  --sl-color-gray-2:  #71717a;
+  --sl-color-gray-3:  #3f3f46;
+  --sl-color-gray-4:  #27272a;
+  --sl-color-gray-5:  #18181b;
+  --sl-color-gray-6:  #0f0f12;
+  --sl-color-black:   var(--weld-bg);
 
-  --sl-font: 'Inter', system-ui, -apple-system, sans-serif;
-  --sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --sl-font:      'Inter', system-ui, -apple-system, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  --sl-content-width: 52rem;
+  --sl-sidebar-width: 17rem;
 }
 
-/* ── Global base ─────────────────────────────────────────── */
+/* ── Base ────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
-  background: var(--weld-black) !important;
+  background: var(--weld-bg) !important;
+  color:       var(--weld-text) !important;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ── Header ──────────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────
+   HEADER
+   ──────────────────────────────────────────────────────────── */
 header.header {
-  background:    rgba(0, 0, 0, 0.85) !important;
-  backdrop-filter: blur(16px) saturate(180%);
-  border-bottom: 1px solid rgba(0, 229, 255, 0.1) !important;
-  box-shadow:    0 1px 0 rgba(0, 229, 255, 0.08);
+  background:      rgba(7, 8, 10, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom:   1px solid rgba(0, 212, 255, 0.1) !important;
+  box-shadow:      0 1px 32px rgba(0, 0, 0, 0.5), 0 0 0 0.5px rgba(0,212,255,0.06);
 }
 
 /* ── Logo ────────────────────────────────────────────────── */
 .site-title img {
-  height: 32px;
-  filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.5));
-  transition: filter 0.3s ease;
+  height:     30px;
+  filter:     drop-shadow(0 0 6px rgba(0, 212, 255, 0.45));
+  transition: filter 0.25s ease;
 }
 .site-title img:hover {
-  filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.8));
+  filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.75));
 }
 .site-title span {
-  font-weight: 600;
-  font-size:   1.1rem;
+  font-weight: 700;
+  font-size:   1.05rem;
   background:  var(--weld-gradient-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-left: 8px;
+  background-clip:         text;
+  margin-left: 10px;
+  letter-spacing: -0.01em;
 }
 
-/* ── Sidebar ─────────────────────────────────────────────── */
-.sidebar-pane {
-  background:    #030303 !important;
-  border-right:  1px solid rgba(255,255,255,0.05) !important;
+/* ────────────────────────────────────────────────────────────
+   SIDEBAR
+   ──────────────────────────────────────────────────────────── */
+.sidebar-pane,
+nav.sidebar {
+  background:  var(--weld-bg-sidebar) !important;
+  border-right: 1px solid var(--weld-border) !important;
 }
 
-/* Active sidebar link */
+/* Sidebar nav links */
+.sidebar-content a {
+  border-radius: 5px;
+  color: var(--weld-text-secondary) !important;
+  font-size: 0.875rem;
+  transition: color 0.15s, background 0.15s;
+  padding: 5px 10px;
+}
+
+.sidebar-content a:hover {
+  color:      var(--weld-text) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Active page link */
 a[aria-current='page'] {
-  background:    rgba(0, 229, 255, 0.06) !important;
-  border-left:   2px solid var(--weld-cyan) !important;
-  color:         var(--weld-cyan) !important;
-  box-shadow:    inset 0 0 20px rgba(0, 229, 255, 0.04);
+  background:   rgba(0, 212, 255, 0.08) !important;
+  color:        var(--weld-cyan) !important;
+  font-weight:  500 !important;
+  border-left:  2px solid var(--weld-cyan) !important;
+  padding-left: 8px !important;
+  border-radius: 0 5px 5px 0 !important;
+  box-shadow:   inset 2px 0 12px rgba(0, 212, 255, 0.04);
 }
 
 /* Sidebar group labels */
-.group-label span {
+.group-label span,
+.sidebar-group-label {
   color:          var(--weld-text-muted) !important;
-  font-size:      0.7rem !important;
-  letter-spacing: 0.1em !important;
-  text-transform: uppercase !important;
+  font-size:      0.68rem !important;
   font-weight:    600 !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
 }
 
-/* ── Content area ────────────────────────────────────────── */
-.content-panel {
-  background: var(--weld-black) !important;
+/* ────────────────────────────────────────────────────────────
+   CONTENT AREA
+   ──────────────────────────────────────────────────────────── */
+.content-panel,
+.main-frame,
+main {
+  background: var(--weld-bg) !important;
 }
 
-/* ── Typography ──────────────────────────────────────────── */
+/* Article inner surface — subtle lift */
+article,
+.sl-container {
+  background: transparent;
+}
+
+/* ────────────────────────────────────────────────────────────
+   TYPOGRAPHY
+   ──────────────────────────────────────────────────────────── */
+
+/* H1 — gradient on doc pages */
 .sl-markdown-content h1 {
+  font-size:   2.25rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
   background:  var(--weld-gradient-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  background-clip:         text;
+  margin-bottom: 0.5rem;
 }
 
+/* H2 — section dividers with cyan accent */
 .sl-markdown-content h2 {
-  color:         var(--weld-text);
-  border-bottom: 1px solid rgba(0, 229, 255, 0.12);
-  padding-bottom: 0.4rem;
-  margin-top:    2.5rem;
+  font-size:     1.35rem;
+  font-weight:   700;
+  letter-spacing: -0.02em;
+  color:         var(--weld-text) !important;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.14);
+  padding-bottom: 0.5rem;
+  margin-top:    2.75rem;
+  margin-bottom: 1rem;
 }
 
+/* H3 — cyan accent, no border */
 .sl-markdown-content h3 {
+  font-size:   1.05rem;
+  font-weight: 600;
+  color:       var(--weld-cyan) !important;
+  letter-spacing: -0.01em;
+  margin-top: 2rem;
+}
+
+/* H4 */
+.sl-markdown-content h4 {
+  font-weight: 600;
+  color:       var(--weld-text) !important;
+  opacity:     0.85;
+}
+
+/* Body text */
+.sl-markdown-content p {
+  color:       var(--weld-text-secondary);
+  line-height: 1.75;
+  font-size:   0.9375rem;
+}
+
+/* Links */
+.sl-markdown-content a:not(.not-content) {
+  color:           var(--weld-cyan) !important;
+  text-decoration: none;
+  border-bottom:   1px solid rgba(0, 212, 255, 0.25);
+  transition:      border-color 0.15s, color 0.15s;
+}
+.sl-markdown-content a:not(.not-content):hover {
+  border-bottom-color: var(--weld-cyan);
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+/* Strong */
+.sl-markdown-content strong {
+  color:       var(--weld-text) !important;
+  font-weight: 600;
+}
+
+/* Lists */
+.sl-markdown-content ul,
+.sl-markdown-content ol {
+  color: var(--weld-text-secondary);
+  line-height: 1.8;
+}
+
+.sl-markdown-content li::marker {
   color: var(--weld-cyan);
+  opacity: 0.6;
 }
 
-/* ── Code blocks ─────────────────────────────────────────── */
+/* Hr */
+.sl-markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--weld-border);
+  margin: 2.5rem 0;
+}
+
+/* ────────────────────────────────────────────────────────────
+   CODE BLOCKS
+   ──────────────────────────────────────────────────────────── */
 .expressive-code {
-  --ec-frm-frameBoxShdCssVal: 0 0 0 1px rgba(0,229,255,0.1), 0 4px 24px rgba(0,0,0,0.6);
+  --ec-frm-frameBoxShdCssVal:
+    0 0 0 1px rgba(0, 212, 255, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+  margin: 1.25rem 0;
+  transform:     perspective(1000px) rotateX(0deg) translateZ(0);
+  transition:    box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.expressive-code pre {
-  background:   #050505 !important;
-  border:       1px solid rgba(0, 229, 255, 0.1) !important;
+.expressive-code:hover {
+  --ec-frm-frameBoxShdCssVal:
+    0 0 0 1px rgba(0, 212, 255, 0.16),
+    0 16px 48px rgba(0, 0, 0, 0.7),
+    0 4px 16px rgba(0, 212, 255, 0.05);
+  transform: perspective(1000px) rotateX(-0.8deg) translateZ(3px);
+}
+
+.expressive-code pre,
+.expressive-code figure {
+  background:   var(--weld-bg-elevated) !important;
+  border:       1px solid var(--weld-border) !important;
   border-radius: 8px !important;
-  font-size:    0.85rem;
+}
+
+/* Code block top bar */
+.expressive-code .frame .header {
+  background:    rgba(255,255,255,0.03) !important;
+  border-bottom: 1px solid var(--weld-border) !important;
+}
+
+/* File title pill */
+.expressive-code .title {
+  color:       var(--weld-text-secondary) !important;
+  font-size:   0.8rem !important;
+  font-family: var(--sl-font-mono) !important;
 }
 
 /* Inline code */
-.sl-markdown-content code:not(pre code) {
-  background:    rgba(0, 229, 255, 0.07);
-  color:         var(--weld-cyan);
-  border:        1px solid rgba(0, 229, 255, 0.15);
+.sl-markdown-content :not(pre) > code {
+  background:    rgba(0, 212, 255, 0.08);
+  color:         var(--weld-cyan-bright);
+  border:        1px solid rgba(0, 212, 255, 0.16);
   border-radius: 4px;
-  padding:       1px 5px;
-  font-size:     0.85em;
+  padding:       0.1em 0.45em;
+  font-size:     0.84em;
+  font-family:   var(--sl-font-mono);
+  font-weight:   500;
 }
 
-/* ── Tables ──────────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────
+   TABLES
+   ──────────────────────────────────────────────────────────── */
 .sl-markdown-content table {
-  border-collapse: collapse;
-  width: 100%;
+  border-collapse: separate;
+  border-spacing:  0;
+  width:           100%;
+  background:      var(--weld-bg-surface);
+  border:          1px solid var(--weld-border);
+  border-radius:   8px;
+  overflow:        hidden;
+  font-size:       0.875rem;
+  margin: 1.5rem 0;
+}
+
+.sl-markdown-content thead {
+  background: rgba(0, 212, 255, 0.05);
 }
 
 .sl-markdown-content th {
-  background:    rgba(0, 229, 255, 0.05);
-  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
-  color:         var(--weld-cyan);
-  font-size:     0.8rem;
+  color:          var(--weld-cyan) !important;
+  font-size:      0.72rem;
+  font-weight:    700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding:       10px 14px;
+  letter-spacing: 0.07em;
+  padding:        10px 16px;
+  border-bottom:  1px solid rgba(0, 212, 255, 0.18);
+  white-space:    nowrap;
 }
 
 .sl-markdown-content td {
+  color:         var(--weld-text-secondary);
+  padding:       10px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.04);
-  padding:       10px 14px;
-  color:         var(--weld-text-muted);
+  vertical-align: top;
+  line-height:   1.6;
+}
+
+.sl-markdown-content tr:last-child td {
+  border-bottom: none;
 }
 
 .sl-markdown-content tr:hover td {
-  background: rgba(0, 229, 255, 0.02);
+  background:    rgba(0, 212, 255, 0.025);
+  color:         var(--weld-text);
 }
 
-/* ── Callouts / Asides ───────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────
+   CALLOUTS / ASIDES
+   ──────────────────────────────────────────────────────────── */
 .starlight-aside {
+  background:    rgba(0, 212, 255, 0.04) !important;
+  border:        1px solid rgba(0, 212, 255, 0.15) !important;
+  border-left:   3px solid var(--weld-cyan) !important;
+  border-radius: 6px !important;
+  padding:       14px 18px !important;
+}
+
+.starlight-aside--note {
+  background:  rgba(0, 212, 255, 0.04) !important;
   border-left-color: var(--weld-cyan) !important;
-  background:        rgba(0, 229, 255, 0.04) !important;
 }
 
 .starlight-aside--tip {
-  border-left-color: var(--weld-indigo) !important;
-  background:        rgba(99, 102, 241, 0.05) !important;
+  background:       rgba(59, 107, 255, 0.05) !important;
+  border-color:     rgba(59, 107, 255, 0.2) !important;
+  border-left-color: var(--weld-cobalt) !important;
 }
 
 .starlight-aside--caution {
-  border-left-color: #f59e0b !important;
-  background:        rgba(245, 158, 11, 0.05) !important;
+  background:       rgba(245, 158, 11, 0.05) !important;
+  border-color:     rgba(245, 158, 11, 0.2) !important;
+  border-left-color: var(--weld-warning) !important;
 }
 
-/* ── Cards (index page) ──────────────────────────────────── */
-.card {
-  background:    #0a0a0a !important;
-  border:        1px solid rgba(255,255,255,0.06) !important;
+.starlight-aside--danger {
+  background:       rgba(239, 68, 68, 0.05) !important;
+  border-color:     rgba(239, 68, 68, 0.2) !important;
+  border-left-color: var(--weld-error) !important;
+}
+
+.starlight-aside .starlight-aside__title {
+  font-weight: 600 !important;
+  font-size:   0.8rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px !important;
+}
+
+/* ────────────────────────────────────────────────────────────
+   CARDS (LinkCard on splash)
+   ──────────────────────────────────────────────────────────── */
+
+/* Perspective wrapper — applied via JS below */
+.card-3d-wrap {
+  perspective: 800px;
+  perspective-origin: 50% 50%;
+}
+
+.card,
+.sl-link-card {
+  background:    var(--weld-bg-surface) !important;
+  border:        1px solid var(--weld-border) !important;
   border-radius: 10px !important;
-  transition:    border-color 0.2s, box-shadow 0.2s;
+  padding:       20px 22px !important;
+  text-decoration: none !important;
+  /* 3D base */
+  transform-style: preserve-3d;
+  transform:     perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0);
+  transition:
+    border-color  0.22s ease,
+    box-shadow    0.22s ease,
+    transform     0.22s ease;
+  will-change: transform;
 }
 
-.card:hover {
-  border-color: rgba(0, 229, 255, 0.25) !important;
-  box-shadow:   0 0 24px rgba(0, 229, 255, 0.08) !important;
+.card:hover,
+.sl-link-card:hover {
+  border-color: var(--weld-border-cyan) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(0, 212, 255, 0.06) !important;
+  transform: perspective(900px) rotateX(-2deg) rotateY(1.5deg) translateY(-3px) translateZ(4px);
 }
 
-.card .sl-flex svg {
-  color: var(--weld-cyan) !important;
+.card .sl-flex svg,
+.sl-link-card svg {
+  color:      var(--weld-cyan) !important;
+  filter:     drop-shadow(0 0 4px rgba(0, 212, 255, 0.3));
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+.card:hover .sl-flex svg,
+.sl-link-card:hover svg {
+  filter:    drop-shadow(0 0 8px rgba(0, 212, 255, 0.55));
+  transform: scale(1.08) translateZ(2px);
 }
 
-/* ── Hero (splash page) ──────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────
+   HERO (splash page)
+   ──────────────────────────────────────────────────────────── */
 .hero {
-  background: radial-gradient(ellipse 80% 50% at 50% -10%,
-    rgba(0, 229, 255, 0.08) 0%,
+  padding: 5rem 1rem 4rem !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Radial glow behind the hero text */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width:  800px;
+  height: 500px;
+  background: radial-gradient(ellipse at center,
+    rgba(0, 212, 255, 0.07) 0%,
+    rgba(59, 107, 255, 0.04) 40%,
     transparent 70%
-  ) !important;
+  );
+  pointer-events: none;
 }
 
 .hero h1 {
-  background:  var(--weld-gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-size:   clamp(2.5rem, 5vw, 4rem) !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.03em !important;
+  font-size:      clamp(2.6rem, 5.5vw, 4.5rem) !important;
+  font-weight:    800 !important;
+  letter-spacing: -0.04em !important;
+  line-height:    1.1 !important;
+  background:     var(--weld-gradient-text) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  margin-bottom:  1rem !important;
+  filter: drop-shadow(0 0 32px rgba(0, 212, 255, 0.15));
 }
 
 .hero .tagline {
-  color:      var(--weld-text-muted) !important;
-  font-size:  1.1rem !important;
-  max-width:  600px;
+  color:     var(--weld-text-secondary) !important;
+  font-size: 1.1rem !important;
+  max-width: 560px;
+  line-height: 1.65 !important;
+  margin: 0 auto 2rem !important;
 }
 
-/* Hero CTA buttons */
+/* Hero CTA */
 .hero .action.primary {
-  background:  var(--weld-cyan) !important;
-  color:       #000 !important;
-  font-weight: 600 !important;
-  box-shadow:  0 0 20px rgba(0, 229, 255, 0.3) !important;
-  border:      none !important;
-  transition:  box-shadow 0.2s !important;
+  background:    var(--weld-cyan) !important;
+  color:         #000 !important;
+  font-weight:   700 !important;
+  font-size:     0.9rem !important;
+  padding:       10px 22px !important;
+  border-radius: 7px !important;
+  border:        none !important;
+  box-shadow:    var(--weld-cyan-glow) !important;
+  transform:     perspective(600px) translateZ(0);
+  transition:    box-shadow 0.2s ease, transform 0.18s ease !important;
 }
-
 .hero .action.primary:hover {
-  box-shadow: 0 0 32px rgba(0, 229, 255, 0.5) !important;
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.5), 0 0 60px rgba(0, 212, 255, 0.2) !important;
+  transform:  perspective(600px) translateZ(6px) translateY(-2px) !important;
+}
+.hero .action.primary:active {
+  transform:  perspective(600px) translateZ(2px) translateY(0px) !important;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.3) !important;
 }
 
 .hero .action:not(.primary) {
-  background:  transparent !important;
-  border:      1px solid rgba(255,255,255,0.12) !important;
-  color:       var(--weld-text-muted) !important;
+  background:    rgba(255,255,255,0.04) !important;
+  border:        1px solid var(--weld-border-strong) !important;
+  color:         var(--weld-text-secondary) !important;
+  font-size:     0.9rem !important;
+  padding:       10px 22px !important;
+  border-radius: 7px !important;
+  transform:     perspective(600px) translateZ(0);
+  transition:    border-color 0.2s, color 0.2s, transform 0.18s !important;
 }
-
 .hero .action:not(.primary):hover {
-  border-color: rgba(0, 229, 255, 0.3) !important;
+  border-color: var(--weld-border-cyan) !important;
   color:        var(--weld-cyan) !important;
+  transform:    perspective(600px) translateZ(4px) translateY(-2px) !important;
 }
 
-/* ── TOC (On this page) ──────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────
+   TOC — Right sidebar
+   ──────────────────────────────────────────────────────────── */
 .right-sidebar-panel {
-  border-left: 1px solid rgba(255,255,255,0.04) !important;
+  border-left: 1px solid var(--weld-border) !important;
+}
+
+.right-sidebar-panel .right-sidebar-title {
+  color:          var(--weld-text-muted) !important;
+  font-size:      0.68rem !important;
+  font-weight:    600 !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
 }
 
 starlight-toc a {
-  color: var(--weld-text-muted) !important;
-  font-size: 0.82rem !important;
+  color:     var(--weld-text-muted) !important;
+  font-size: 0.8rem !important;
   transition: color 0.15s;
+  line-height: 1.6;
 }
-
-starlight-toc a:hover,
+starlight-toc a:hover {
+  color: var(--weld-text) !important;
+}
 starlight-toc a[aria-current='true'] {
-  color: var(--weld-cyan) !important;
+  color:       var(--weld-cyan) !important;
+  font-weight: 500 !important;
 }
 
-/* ── Search ──────────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────
+   SEARCH
+   ──────────────────────────────────────────────────────────── */
 site-search button {
-  background:  rgba(255,255,255,0.04) !important;
-  border:      1px solid rgba(255,255,255,0.08) !important;
-  color:       var(--weld-text-muted) !important;
-  transition:  border-color 0.15s;
+  background:    rgba(255,255,255,0.04) !important;
+  border:        1px solid var(--weld-border) !important;
+  border-radius: 7px !important;
+  color:         var(--weld-text-muted) !important;
+  font-size:     0.82rem !important;
+  transition:    border-color 0.15s, background 0.15s;
 }
-
 site-search button:hover {
-  border-color: rgba(0, 229, 255, 0.3) !important;
+  background:    rgba(0, 212, 255, 0.04) !important;
+  border-color:  var(--weld-border-cyan) !important;
+  color:         var(--weld-text-secondary) !important;
 }
 
-/* ── Scrollbar ───────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--weld-black);
-}
-::-webkit-scrollbar-thumb {
-  background:    rgba(0, 229, 255, 0.2);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 229, 255, 0.4);
+/* ────────────────────────────────────────────────────────────
+   PAGINATION
+   ──────────────────────────────────────────────────────────── */
+.pagination-links {
+  margin-top:    3rem !important;
+  border-top:    1px solid var(--weld-border) !important;
+  padding-top:   2rem !important;
 }
 
-/* ── Pagination ──────────────────────────────────────────── */
 .pagination-links a {
-  background:    #0a0a0a !important;
-  border:        1px solid rgba(255,255,255,0.06) !important;
+  background:    var(--weld-bg-surface) !important;
+  border:        1px solid var(--weld-border) !important;
   border-radius: 8px !important;
-  transition:    border-color 0.15s, box-shadow 0.15s;
+  padding:       14px 18px !important;
+  transform:     perspective(600px) translateZ(0);
+  transition:    border-color 0.18s, box-shadow 0.18s, transform 0.18s;
 }
-
 .pagination-links a:hover {
-  border-color: rgba(0, 229, 255, 0.3) !important;
-  box-shadow:   0 0 12px rgba(0, 229, 255, 0.08) !important;
+  border-color: var(--weld-border-cyan) !important;
+  box-shadow:   0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0,212,255,0.08) !important;
+  transform:    perspective(600px) translateZ(5px) translateY(-2px);
 }
 
-/* ── Tabs component ──────────────────────────────────────── */
+.pagination-links .link-title {
+  color:       var(--weld-text) !important;
+  font-weight: 600 !important;
+}
+.pagination-links .link-label {
+  color:     var(--weld-text-muted) !important;
+  font-size: 0.75rem !important;
+}
+
+/* ────────────────────────────────────────────────────────────
+   TABS (Starlight)
+   ──────────────────────────────────────────────────────────── */
+starlight-tabs {
+  border:        1px solid var(--weld-border) !important;
+  border-radius: 8px !important;
+  overflow:      hidden !important;
+}
+
+starlight-tabs [role='tablist'] {
+  background:  rgba(255,255,255,0.025) !important;
+  border-bottom: 1px solid var(--weld-border) !important;
+  padding: 0 4px !important;
+  gap: 2px !important;
+}
+
+starlight-tabs [role='tab'] {
+  color:       var(--weld-text-muted) !important;
+  font-size:   0.82rem !important;
+  font-weight: 500 !important;
+  padding:     8px 14px !important;
+  border-bottom: 2px solid transparent !important;
+  transition:  color 0.15s, border-color 0.15s;
+}
+
+starlight-tabs [role='tab']:hover {
+  color: var(--weld-text) !important;
+}
+
 starlight-tabs [role='tab'][aria-selected='true'] {
   color:         var(--weld-cyan) !important;
-  border-color:  var(--weld-cyan) !important;
+  border-bottom-color: var(--weld-cyan) !important;
 }
 
 starlight-tabs [role='tabpanel'] {
-  border-color: rgba(0,229,255,0.1) !important;
+  background:  var(--weld-bg-elevated) !important;
+  border-top:  none !important;
+  padding:     0 !important;
 }
 
-/* ── Selection ───────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────
+   PAGE — Content + breadcrumb
+   ──────────────────────────────────────────────────────────── */
+
+/* Breadcrumbs */
+nav[aria-label='Breadcrumb'] {
+  font-size: 0.8rem;
+}
+nav[aria-label='Breadcrumb'] a {
+  color: var(--weld-text-muted) !important;
+}
+nav[aria-label='Breadcrumb'] li:last-child span {
+  color: var(--weld-text-secondary);
+}
+
+/* Page title container */
+.page-title {
+  padding-bottom: 1.5rem;
+  border-bottom:  1px solid var(--weld-border);
+  margin-bottom:  2rem;
+}
+
+/* ────────────────────────────────────────────────────────────
+   SCROLLBAR
+   ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--weld-bg); }
+::-webkit-scrollbar-thumb {
+  background:    rgba(0, 212, 255, 0.18);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 255, 0.35);
+}
+
+/* ────────────────────────────────────────────────────────────
+   SELECTION
+   ──────────────────────────────────────────────────────────── */
 ::selection {
-  background: rgba(0, 229, 255, 0.2);
+  background: rgba(0, 212, 255, 0.18);
   color:      var(--weld-text);
 }
 
-/* ── Mobile nav ──────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────
+   BADGE PILLS — used in component docs
+   ──────────────────────────────────────────────────────────── */
+.badge,
+.sl-badge {
+  font-family:    var(--sl-font-mono) !important;
+  font-size:      0.72rem !important;
+  font-weight:    600 !important;
+  border-radius:  4px !important;
+  padding:        2px 8px !important;
+  letter-spacing: 0.03em;
+}
+
+/* ────────────────────────────────────────────────────────────
+   RESPONSIVE
+   ──────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2.2rem !important;
+  .hero h1 { font-size: 2.2rem !important; }
+  .hero .tagline { font-size: 1rem !important; }
+  .sl-markdown-content h1 { font-size: 1.85rem; }
+  .sl-markdown-content h2 { font-size: 1.2rem; }
+}
+
+/* ────────────────────────────────────────────────────────────
+   3D TILT — mouse-tracking on cards
+   Pure CSS approach: cards tilt slightly toward cursor quadrant.
+   JS handles the precise tracking, CSS handles the fallback.
+   ──────────────────────────────────────────────────────────── */
+
+/* Reduce motion — respect user preference */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .sl-link-card,
+  .expressive-code,
+  .pagination-links a,
+  .hero .action {
+    transition: none !important;
+    transform:  none !important;
   }
 }

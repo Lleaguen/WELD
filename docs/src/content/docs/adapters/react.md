@@ -1,44 +1,31 @@
 ---
 title: React Adapter
-description: Using @weldjs/http with React 18+
+description: Using @weldjs/react with React 18+
 ---
 
-The React adapter bridges WELD signals to React's rendering cycle using `useSyncExternalStore` — the official React 18 API for subscribing to external stores. This means WELD integrates correctly with Concurrent Mode and Suspense without any extra configuration.
+`@weldjs/react` bridges WELD signals to React using `useSyncExternalStore` — the official React 18 API for external stores. It works correctly with Concurrent Mode, Suspense, and Strict Mode.
 
-## Setup
-
-React 18+ is required as a peer dependency.
+## Install
 
 ```bash
-npm install @weldjs/http zod
+npm install @weldjs/react zod
 ```
 
 ## useWeld()
 
 ```tsx
-import { useWeld } from '@weldjs/http/react'
-
-const { data, status, error, loading } = useWeld(weldResponse)
+import { useWeld } from '@weldjs/react'
 ```
 
-:::caution[Important]
-Never call `api.get()` directly in the component body — it creates a new request on every render. Use the factory overload instead:
+### Signatures
 
-```tsx
-// ✅ Factory overload — memoized automatically
-const { data, loading } = useWeld(() => api.get('v1/products', Schema), [])
+```ts
+// Overload 1 — stable reference (module-level or useMemo)
+useWeld(response: WeldResponse<T>): UseWeldResult<T>
 
-// ✅ With changing deps
-const { data } = useWeld(() => api.get(`users/${id}`, Schema), [id])
-
-// ✅ Or explicit useMemo
-const request = useMemo(() => api.get('v1/products', Schema), [])
-const { data } = useWeld(request)
-
-// ❌ Don't do this — new request object on every render
-const { data } = useWeld(api.get('v1/products', Schema))
+// Overload 2 — factory with deps (Strict Mode safe, recommended)
+useWeld(factory: () => WeldResponse<T>, deps: unknown[]): UseWeldResult<T>
 ```
-:::
 
 ### Returns
 
@@ -49,11 +36,17 @@ const { data } = useWeld(api.get('v1/products', Schema))
 | `error` | `Error \| null` | Error if the request failed |
 | `loading` | `boolean` | Shorthand for `status === 'loading'` |
 
-## Example
+---
+
+## How to call useWeld — 3 patterns, all work
+
+### Pattern 1 — Module-level response (simplest, always safe)
+
+Create the request outside the component. This is the most explicit pattern and has zero edge cases.
 
 ```tsx
 import { Weld } from '@weldjs/http'
-import { useWeld } from '@weldjs/http/react'
+import { useWeld } from '@weldjs/react'
 import { z } from 'zod'
 
 const api = new Weld('https://api.example.com')
@@ -64,70 +57,98 @@ const ProductSchema = z.object({
   price: z.number(),
 })
 
-export function ProductList() {
-  const { data, loading, error } = useWeld(
-    () => api.get('v1/products', z.array(ProductSchema)),
-    []
-  )
+// ✅ Created once at module level — stable across all renders
+const productsRequest = api.get('v1/products', z.array(ProductSchema))
 
-  if (loading) return <p>Loading products...</p>
-  if (error)   return <p>Failed to load: {error.message}</p>
+export function ProductList() {
+  const { data, loading, error } = useWeld(productsRequest)
+
+  if (loading) return <p>Loading...</p>
+  if (error)   return <p>Error: {error.message}</p>
 
   return (
     <ul>
-      {data?.map((product) => (
-        <li key={product.id}>
-          <strong>{product.name}</strong> — ${product.price}
-        </li>
-      ))}
+      {data?.map(p => <li key={p.id}>{p.name} — ${p.price}</li>)}
     </ul>
   )
 }
 ```
 
-## Mutations
+### Pattern 2 — Factory with deps (recommended for dynamic requests)
+
+Pass a factory function and a deps array — exactly like `useEffect`. The response is created once per dep change, and is Strict Mode safe.
 
 ```tsx
-import { useState } from 'react'
+export function UserDetail({ id }: { id: string }) {
+  const { data, loading } = useWeld(
+    () => api.get(`users/${id}`, UserSchema),
+    [id]   // recreate when id changes
+  )
 
+  if (loading) return <p>Loading user...</p>
+  return <div>{data?.name}</div>
+}
+```
+
+### Pattern 3 — useMemo (explicit, also works)
+
+```tsx
+import { useMemo } from 'react'
+
+export function ProductList({ category }: { category: string }) {
+  const request = useMemo(
+    () => api.get('v1/products', z.array(ProductSchema), { query: { category } }),
+    [category]
+  )
+  const { data, loading } = useWeld(request)
+  // ...
+}
+```
+
+:::danger[Don't do this]
+Never call `api.get()` directly in the render body without memoization:
+
+```tsx
+// ❌ Creates a new request object on every render
+const { data } = useWeld(api.get('v1/products', Schema))
+```
+
+This creates a new `WeldResponse` on every render, which breaks signal subscriptions.
+:::
+
+---
+
+## Mutations
+
+Mutations don't need `useWeld` — call them directly in event handlers:
+
+```tsx
 export function CreateProduct() {
-  const [name,  setName]  = useState('')
-  const [price, setPrice] = useState(0)
-
-  const handleSubmit = async () => {
-    const { promise } = api.post('v1/products', ProductSchema, {
-      body: { name, price },
-    })
-    await promise
-    // refresh product list...
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await api.post('v1/products', ProductSchema, {
+      body: { name: 'Widget', price: 9.99 },
+    }).promise
   }
 
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); void handleSubmit() }}>
-      <input value={name}  onChange={(e) => setName(e.target.value)} />
-      <input value={price} onChange={(e) => setPrice(Number(e.target.value))} type="number" />
-      <button type="submit">Create</button>
-    </form>
-  )
+  return <form onSubmit={handleSubmit}>...</form>
 }
 ```
 
 ## Cancellation
 
-Inside `useEffect` is the correct place for direct `api.get()` calls — you have
-control of the lifecycle and can call `abort()` on cleanup.
+Inside `useEffect` you have full lifecycle control — direct `api.get()` is fine here:
 
 ```tsx
 import { useEffect } from 'react'
 
 export function ProductList() {
   useEffect(() => {
-    // ✅ Direct api.get() is fine here — useEffect controls the lifecycle
+    // ✅ Direct api.get() inside useEffect is fine — you control the lifecycle
     const { promise, abort } = api.get('v1/products', z.array(ProductSchema))
     promise.then(console.log).catch(console.error)
 
-    // Cancel on unmount
-    return () => abort()
+    return () => abort() // cancel on unmount
   }, [])
 }
 ```

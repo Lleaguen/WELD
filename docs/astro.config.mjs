@@ -14,6 +14,9 @@ export default defineConfig({
         { icon: 'github', label: 'GitHub', href: 'https://github.com/lleaguen/WELD' },
       ],
       customCss: ['./src/styles/custom.css'],
+      components: {
+        Head: './src/components/Tilt3D.astro',
+      },
       defaultLocale: 'root',
       locales: {
         root: { label: 'English', lang: 'en' },

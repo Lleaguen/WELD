@@ -4,6 +4,12 @@
  * Overlay dialog. Blocks interaction with the rest of the page.
  * Closes on backdrop click or Escape key.
  *
+ * 3D tilt:
+ *   <Weld.Modal tilt />                          // entrance + subtle float tilt
+ *   <Weld.Modal tilt={{ max: 3, scale: 1.01 }} /> // custom
+ *   <Weld.Modal tilt={false} />                  // no tilt (default)
+ *   <Weld.Modal tilt="none" />                   // no tilt, no will-change
+ *
  * Usage:
  *   <Weld.Modal open={open} onClose={() => setOpen(false)} title="Confirm delete">
  *     <p>This action cannot be undone.</p>
@@ -15,6 +21,7 @@
  */
 
 import React, { useEffect, type ReactNode } from 'react'
+import { useTilt3D, type TiltProp } from '../hooks/useTilt3D.js'
 
 export interface WeldModalProps {
   open:       boolean
@@ -25,6 +32,13 @@ export interface WeldModalProps {
   width?:     number
   /** Hide the close button */
   hideClose?: boolean
+  /**
+   * 3D tilt — the dialog floats and responds to mouse movement.
+   * - true / object → tilt active (default: false)
+   * - false         → no tilt
+   * - 'none'        → no tilt, no will-change hint
+   */
+  tilt?:      TiltProp
   style?:     React.CSSProperties
 }
 
@@ -35,8 +49,12 @@ if (typeof document !== 'undefined') {
     s.id = id
     s.textContent = `
       @keyframes _weld-modal-in {
-        from { opacity: 0; transform: translateY(8px) scale(0.98); }
-        to   { opacity: 1; transform: translateY(0) scale(1); }
+        from { opacity: 0; transform: translateY(10px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0)    scale(1); }
+      }
+      @keyframes _weld-modal-in-3d {
+        from { opacity: 0; transform: perspective(900px) rotateX(4deg) translateY(12px) scale(0.97); }
+        to   { opacity: 1; transform: perspective(900px) rotateX(0deg) translateY(0)    scale(1); }
       }
       @keyframes _weld-backdrop-in {
         from { opacity: 0; }
@@ -52,10 +70,22 @@ export function Modal({
   onClose,
   title,
   children,
-  width = 480,
+  width     = 480,
   hideClose = false,
+  tilt      = false,
   style,
 }: WeldModalProps) {
+  const tiltActive = tilt && tilt !== 'none'
+
+  // Modal tilt uses conservative values — it's a large element
+  const { ref, style: tiltStyle } = useTilt3D(
+    tiltActive
+      ? (tilt === true
+          ? { max: 4, scale: 1.01, perspective: 1000, speed: 250 }
+          : tilt)
+      : 'none'
+  )
+
   // Close on Escape
   useEffect(() => {
     if (!open) return
@@ -67,7 +97,7 @@ export function Modal({
   // Lock body scroll
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = ''
+    else      document.body.style.overflow = ''
     return () => { document.body.style.overflow = '' }
   }, [open])
 
@@ -78,19 +108,20 @@ export function Modal({
       data-weld-modal-backdrop
       onClick={onClose}
       style={{
-        position:        'fixed',
-        inset:           0,
-        zIndex:          1000,
-        background:      'rgba(0,0,0,0.65)',
-        backdropFilter:  'blur(4px)',
-        display:         'flex',
-        alignItems:      'center',
-        justifyContent:  'center',
-        padding:         '16px',
-        animation:       '_weld-backdrop-in 0.18s ease',
+        position:       'fixed',
+        inset:          0,
+        zIndex:         1000,
+        background:     'rgba(0,0,0,0.65)',
+        backdropFilter: 'blur(4px)',
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'center',
+        padding:        '16px',
+        animation:      '_weld-backdrop-in 0.18s ease',
       }}
     >
       <div
+        ref={ref as React.RefObject<HTMLDivElement>}
         data-weld-modal
         onClick={(e) => e.stopPropagation()}
         style={{
@@ -100,7 +131,12 @@ export function Modal({
           border:       '1px solid rgba(255,255,255,0.08)',
           borderRadius: 'var(--weld-radius-xl, 12px)',
           overflow:     'hidden',
-          animation:    '_weld-modal-in 0.2s cubic-bezier(0.16,1,0.3,1)',
+          // 3D entrance animation when tilt is active, flat otherwise
+          animation:    tiltActive
+            ? '_weld-modal-in-3d 0.25s cubic-bezier(0.16,1,0.3,1)'
+            : '_weld-modal-in 0.2s cubic-bezier(0.16,1,0.3,1)',
+          // Apply tilt hover styles on top of animation
+          ...(tiltActive ? tiltStyle : {}),
           ...style,
         }}
       >

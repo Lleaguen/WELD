@@ -4,10 +4,17 @@
  * Directly "welded" to a network promise lifecycle.
  * At rest: clean, neutral, invisible structure.
  * On interaction: plasma glow activates — the weld lights up.
+ *
+ * 3D tilt (same API as `neon`):
+ *   <Weld.Button tilt />                           // default — translateZ lift on hover
+ *   <Weld.Button tilt={{ max: 4, scale: 1.03 }} /> // custom
+ *   <Weld.Button tilt={false} />                   // no tilt (default)
+ *   <Weld.Button tilt="none" />                    // no tilt, no will-change
  */
 
 import React, { useState, useCallback, type ReactNode, type ButtonHTMLAttributes } from 'react'
 import type { WeldResponse } from '@weldjs/core'
+import { useTilt3D, type TiltProp } from '../hooks/useTilt3D.js'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -28,6 +35,13 @@ export interface WeldButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
    * - 'none'         → No visual styles at all (BYO CSS)
    */
   neon?: boolean | NeonConfig | 'none'
+  /**
+   * 3D tilt on hover.
+   * - true / object → tilt active
+   * - false          → no tilt (default)
+   * - 'none'         → no tilt, no will-change hint
+   */
+  tilt?: TiltProp
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   showSuccess?: boolean
@@ -61,15 +75,24 @@ export function Button({
   action,
   children,
   neon = true,
+  tilt = false,
   variant = 'primary',
   size = 'md',
   showSuccess = true,
   className,
   disabled,
+  style,
   ...rest
 }: WeldButtonProps) {
   const [status, setStatus] = useState<ButtonStatus>('idle')
   const [hovered, setHovered] = useState(false)
+
+  // Tilt — uses a reduced default for buttons (smaller element, less rotation needed)
+  const { ref, style: tiltStyle } = useTilt3D(
+    tilt === true
+      ? { max: 6, scale: 1.03, perspective: 600, speed: 180 }
+      : tilt
+  )
 
   const handleClick = useCallback(async () => {
     if (!action || status === 'loading') return
@@ -86,8 +109,8 @@ export function Button({
   }, [action, status, showSuccess])
 
   const isDisabled = disabled || status === 'loading'
-  const noStyle    = neon === 'none'  // only 'none' strips all styles
-  const glowOff    = neon === false   // false = styles yes, glow no
+  const noStyle    = neon === 'none'
+  const glowOff    = neon === false
 
   const plasma = (!glowOff && typeof neon === 'object' && neon !== null && 'color' in neon)
     ? (neon.color ?? 'var(--weld-plasma-cyan, #00d4ff)')
@@ -98,7 +121,14 @@ export function Button({
 
   if (noStyle) {
     return (
-      <button {...rest} disabled={isDisabled} onClick={handleClick} className={className}>
+      <button
+        {...rest}
+        ref={ref as React.RefObject<HTMLButtonElement>}
+        disabled={isDisabled}
+        onClick={handleClick}
+        className={className}
+        style={style}
+      >
         {children}
       </button>
     )
@@ -123,11 +153,15 @@ export function Button({
     opacity:        isDisabled && status !== 'loading' ? 0.45 : 1,
     ...sizeMap[size],
     ...getStateStyles({ variant, status, hovered, plasma, intensity, glowOff }),
+    // Tilt merges last — overrides transition when active, ignored when disabled/error
+    ...(tilt && tilt !== 'none' && status === 'idle' && !isDisabled ? tiltStyle : {}),
+    ...style,
   }
 
   return (
     <button
       {...rest}
+      ref={ref as React.RefObject<HTMLButtonElement>}
       disabled={isDisabled}
       onClick={handleClick}
       onMouseEnter={() => setHovered(true)}
@@ -157,8 +191,6 @@ const sizeMap: Record<NonNullable<WeldButtonProps['size']>, React.CSSProperties>
 }
 
 // ─── State-driven styles ──────────────────────────────────────────────────────
-// At rest: clean, barely-there border.
-// On action/hover: plasma activates.
 
 function getStateStyles(p: {
   variant:   NonNullable<WeldButtonProps['variant']>
@@ -170,13 +202,12 @@ function getStateStyles(p: {
 }): React.CSSProperties {
   const { variant, status, hovered, plasma, intensity, glowOff } = p
 
-  // ── Active states (weld lights up) ────────────────────────────────────────
   if (status === 'loading') {
     return {
       background:  'var(--weld-bg-elevated, #111115)',
       border:      `1px solid ${plasma}`,
       color:       plasma,
-      boxShadow:   `0 0 0 1px ${plasma}22, 0 0 ${14 * intensity}px ${plasma}18`,
+      boxShadow:   glowOff ? undefined : `0 0 0 1px ${plasma}22, 0 0 ${14 * intensity}px ${plasma}18`,
       animation:   '_weld-pulse 1.4s ease-in-out infinite',
     }
   }
@@ -186,7 +217,7 @@ function getStateStyles(p: {
       background: 'rgba(34,197,94,0.07)',
       border:     '1px solid rgba(34,197,94,0.35)',
       color:      'var(--weld-state-success, #22c55e)',
-      boxShadow:  '0 0 10px rgba(34,197,94,0.08)',
+      boxShadow:  glowOff ? undefined : '0 0 10px rgba(34,197,94,0.08)',
     }
   }
 
@@ -199,18 +230,15 @@ function getStateStyles(p: {
     }
   }
 
-  // ── Idle variants ─────────────────────────────────────────────────────────
   const variants: Record<string, React.CSSProperties> = {
     primary: hovered
       ? {
-          // hover: plasma activates
           background: plasma,
           border:     `1px solid ${plasma}`,
           color:      '#09090b',
-          boxShadow:  `0 0 0 1px ${plasma}22, 0 0 ${12 * intensity}px ${plasma}20`,
+          boxShadow:  glowOff ? undefined : `0 0 0 1px ${plasma}22, 0 0 ${12 * intensity}px ${plasma}20`,
         }
       : {
-          // rest: solid but muted
           background: 'rgba(0,212,255,0.10)',
           border:     '1px solid rgba(0,212,255,0.18)',
           color:      plasma,
@@ -245,7 +273,7 @@ function getStateStyles(p: {
           background: 'rgba(239,68,68,0.10)',
           border:     '1px solid rgba(239,68,68,0.45)',
           color:      '#ef4444',
-          boxShadow:  '0 0 10px rgba(239,68,68,0.10)',
+          boxShadow:  glowOff ? undefined : '0 0 10px rgba(239,68,68,0.10)',
         }
       : {
           background: 'transparent',

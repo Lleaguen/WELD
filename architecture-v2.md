@@ -19,15 +19,12 @@ weld/
 │   ├── solid/             # @weld/solid — (v3) Primitivos nativos
 │   ├── angular/           # @weld/angular — (v3) Observables + directivas
 │   │
-│   ├── theme/             # @weld/theme — Neon Theme Engine (CSS vars + tokens)
-│   │
-│   └── weld-http/         # weld-http — Re-export ligero del core (backward compat)
+│   └── theme/             # @weld/theme — Neon Theme Engine (CSS vars + tokens)
 │
 ├── docs/                  # Doc site Astro + Starlight
 └── examples/
-    ├── next-app/
     ├── vite-react/
-    └── nuxt/
+    └── vite-fullstack/
 ```
 
 ---

@@ -1,0 +1,61 @@
+---
+// Tilt3D.astro — override del componente Head de Starlight
+// Mantiene el head original y agrega el script de tilt al final
+import Default from '@astrojs/starlight/components/Head.astro'
+---
+<Default {...Astro.props}><slot /></Default>
+
+<script>
+(function () {
+  // Solo en dispositivos con cursor (no touch-only)
+  if (!window.matchMedia('(pointer: fine)').matches) return
+  // Respetar preferencia de movimiento reducido
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  const TILT_MAX = 4    // grados máximos de inclinación
+  const LIFT_Z   = 6    // px de elevación Z
+  const LIFT_Y   = -3   // px de elevación Y
+  const EASE_MS  = 220  // ms de transición
+
+  function applyTilt(el, rect, clientX, clientY) {
+    const cx = rect.left + rect.width  / 2
+    const cy = rect.top  + rect.height / 2
+    const dx = (clientX - cx) / (rect.width  / 2)
+    const dy = (clientY - cy) / (rect.height / 2)
+    const rx = -dy * TILT_MAX
+    const ry =  dx * TILT_MAX
+    el.style.transform =
+      `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(${LIFT_Y}px) translateZ(${LIFT_Z}px)`
+  }
+
+  function resetTilt(el) {
+    el.style.transform =
+      'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0) translateZ(0)'
+  }
+
+  function attachTilt(el) {
+    if (el.dataset.tiltAttached) return
+    el.dataset.tiltAttached = '1'
+    el.style.transition =
+      `transform ${EASE_MS}ms ease, border-color ${EASE_MS}ms ease, box-shadow ${EASE_MS}ms ease`
+
+    el.addEventListener('mousemove', (e) => {
+      applyTilt(el, el.getBoundingClientRect(), e.clientX, e.clientY)
+    })
+    el.addEventListener('mouseleave', () => resetTilt(el))
+  }
+
+  function initAll() {
+    document.querySelectorAll('.card, .sl-link-card').forEach(attachTilt)
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll)
+  } else {
+    initAll()
+  }
+
+  // Re-init tras navegación con View Transitions
+  document.addEventListener('astro:page-load', initAll)
+})()
+</script>
