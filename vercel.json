@@ -1,7 +1,6 @@
 {
-  "rootDirectory": "docs",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
+  "buildCommand": "npm install --prefix docs && npm run build --prefix docs",
+  "outputDirectory": "docs/dist",
+  "installCommand": "echo 'managed by buildCommand'",
   "framework": null
 }
