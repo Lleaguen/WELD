@@ -4,6 +4,10 @@
  * Overlay dialog. Blocks interaction with the rest of the page.
  * Closes on backdrop click or Escape key.
  *
+ * Animations:
+ *   - When gsap is available: smooth spring entrance + real exit animation
+ *   - Without gsap: CSS keyframe fallback (always works)
+ *
  * 3D tilt:
  *   <Weld.Modal tilt />                          // entrance + subtle float tilt
  *   <Weld.Modal tilt={{ max: 3, scale: 1.01 }} /> // custom
@@ -13,14 +17,10 @@
  * Usage:
  *   <Weld.Modal open={open} onClose={() => setOpen(false)} title="Confirm delete">
  *     <p>This action cannot be undone.</p>
- *     <Weld.Stack direction="row" justify="flex-end" gap={8}>
- *       <Weld.Button variant="ghost" action={() => { setOpen(false); return Promise.resolve() }}>Cancel</Weld.Button>
- *       <Weld.Button variant="danger" action={handleDelete}>Delete</Weld.Button>
- *     </Weld.Stack>
  *   </Weld.Modal>
  */
 
-import React, { useEffect, type ReactNode } from 'react'
+import React, { useEffect, useRef, useCallback, useState, type ReactNode } from 'react'
 import { useTilt3D, type TiltProp } from '../hooks/useTilt3D.js'
 
 export interface WeldModalProps {
@@ -42,6 +42,7 @@ export interface WeldModalProps {
   style?:     React.CSSProperties
 }
 
+// ─── CSS keyframe fallback (injected once) ────────────────────────────────────
 if (typeof document !== 'undefined') {
   const id = '__weld_modal__'
   if (!document.getElementById(id)) {
@@ -76,9 +77,11 @@ export function Modal({
   style,
 }: WeldModalProps) {
   const tiltActive = tilt && tilt !== 'none'
+  const dialogRef  = useRef<HTMLDivElement | null>(null)
+  const backdropRef = useRef<HTMLDivElement | null>(null)
 
-  // Modal tilt uses conservative values — it's a large element
-  const { ref, style: tiltStyle } = useTilt3D(
+  // useTilt3D for mouse-tracking tilt (runs in parallel with GSAP entrance)
+  const { ref: tiltRef, style: tiltStyle } = useTilt3D(
     tiltActive
       ? (tilt === true
           ? { max: 4, scale: 1.01, perspective: 1000, speed: 250 }
@@ -86,7 +89,83 @@ export function Modal({
       : 'none'
   )
 
-  // Close on Escape
+  // Merge both refs into dialogRef
+  const setDialogRef = useCallback((el: HTMLDivElement | null) => {
+    dialogRef.current = el
+    ;(tiltRef as React.MutableRefObject<HTMLElement | null>).current = el
+  }, [tiltRef])
+
+  // ── GSAP entrance when modal opens ──────────────────────────────────────────
+  useEffect(() => {
+    if (!open) return
+    const el       = dialogRef.current
+    const backdrop = backdropRef.current
+    if (!el) return
+
+    const reduced = typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (reduced) return
+
+    import('gsap').then(({ gsap }) => {
+      // Backdrop fade in
+      if (backdrop) {
+        gsap.fromTo(backdrop,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.22, ease: 'power2.out' }
+        )
+      }
+
+      // Dialog entrance — spring-like with slight 3D tilt if active
+      gsap.fromTo(el,
+        {
+          opacity: 0,
+          y:       tiltActive ? 16 : 12,
+          scale:   0.96,
+          rotateX: tiltActive ? 5 : 0,
+        },
+        {
+          opacity:    1,
+          y:          0,
+          scale:      1,
+          rotateX:    0,
+          duration:   0.35,
+          ease:       'back.out(1.4)',
+          clearProps: tiltActive ? 'y,scale,rotateX' : 'y,scale',
+        }
+      )
+    }).catch(() => {
+      // GSAP not available — CSS animation fallback is already set via `animation` prop
+    })
+  }, [open, tiltActive])
+
+  // ── Animated close ───────────────────────────────────────────────────────────
+  const [visible, setVisible] = useState(open)
+
+  useEffect(() => {
+    if (open) {
+      setVisible(true)
+      return
+    }
+
+    const el       = dialogRef.current
+    const backdrop = backdropRef.current
+    const reduced  = typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (!el || reduced) {
+      setVisible(false)
+      return
+    }
+
+    import('gsap').then(({ gsap }) => {
+      const tl = gsap.timeline({ onComplete: () => setVisible(false) })
+      tl.to(el,       { opacity: 0, y: 10, scale: 0.96, duration: 0.2, ease: 'power2.in' }, 0)
+      tl.to(backdrop, { opacity: 0,                      duration: 0.2, ease: 'power2.in' }, 0)
+    }).catch(() => setVisible(false))
+  }, [open])
+
+  // ── Escape key ───────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -94,17 +173,18 @@ export function Modal({
     return () => document.removeEventListener('keydown', handler)
   }, [open, onClose])
 
-  // Lock body scroll
+  // ── Body scroll lock ─────────────────────────────────────────────────────────
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden'
     else      document.body.style.overflow = ''
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  if (!open) return null
+  if (!visible) return null
 
   return (
     <div
+      ref={backdropRef}
       data-weld-modal-backdrop
       onClick={onClose}
       style={{
@@ -117,11 +197,12 @@ export function Modal({
         alignItems:     'center',
         justifyContent: 'center',
         padding:        '16px',
-        animation:      '_weld-backdrop-in 0.18s ease',
+        // CSS fallback animation — GSAP overrides if available
+        animation:      open ? '_weld-backdrop-in 0.18s ease' : undefined,
       }}
     >
       <div
-        ref={ref as React.RefObject<HTMLDivElement>}
+        ref={setDialogRef}
         data-weld-modal
         onClick={(e) => e.stopPropagation()}
         style={{
@@ -131,11 +212,10 @@ export function Modal({
           border:       '1px solid rgba(255,255,255,0.08)',
           borderRadius: 'var(--weld-radius-xl, 12px)',
           overflow:     'hidden',
-          // 3D entrance animation when tilt is active, flat otherwise
-          animation:    tiltActive
-            ? '_weld-modal-in-3d 0.25s cubic-bezier(0.16,1,0.3,1)'
-            : '_weld-modal-in 0.2s cubic-bezier(0.16,1,0.3,1)',
-          // Apply tilt hover styles on top of animation
+          // CSS fallback — GSAP overrides if available
+          animation:    open
+            ? (tiltActive ? '_weld-modal-in-3d 0.25s cubic-bezier(0.16,1,0.3,1)' : '_weld-modal-in 0.2s cubic-bezier(0.16,1,0.3,1)')
+            : undefined,
           ...(tiltActive ? tiltStyle : {}),
           ...style,
         }}

@@ -91,6 +91,12 @@ export type { Breakpoint } from './hooks/useResponsive.js'
 export { useTilt3D } from './hooks/useTilt3D.js'
 export type { TiltProp, TiltConfig, UseTilt3DResult } from './hooks/useTilt3D.js'
 
+// GSAP-powered hooks — require gsap >= 3.12 as an optional peer dependency
+export { useGsapTilt }   from './hooks/useGsapTilt.js'
+export { useGsapReveal, useGsapStagger } from './hooks/useGsapReveal.js'
+export type { RevealProp, RevealConfig } from './hooks/useGsapReveal.js'
+export type { UseGsapTiltResult }        from './hooks/useGsapTilt.js'
+
 // ── Theme ──────────────────────────────────────────────────────────────────────
 export type { WeldTokens } from './theme/tokens.js'
 

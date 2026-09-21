@@ -4,20 +4,22 @@
  * Surface-elevated container. For grouping related content.
  * Optional header with title + actions, optional footer.
  *
- * Usage:
- *   <Weld.Card title="Details" actions={<Weld.Button size="sm">Edit</Weld.Button>}>
- *     <p>Content here</p>
- *   </Weld.Card>
- *
  * 3D tilt (same API as `neon`):
  *   <Weld.Card tilt />                          // default — 8°, scale 1.02
  *   <Weld.Card tilt={{ max: 5, scale: 1.01 }} /> // custom
- *   <Weld.Card tilt={false} />                  // styles on, tilt off
+ *   <Weld.Card tilt={false} />                  // no tilt (default)
  *   <Weld.Card tilt="none" />                   // no tilt at all
+ *
+ * GSAP reveal on mount:
+ *   <Weld.Card reveal />                              // default — fade up
+ *   <Weld.Card reveal={{ y: 30, duration: 0.5 }} />   // custom
+ *   <Weld.Card reveal={false} />                      // no reveal (default)
+ *   <Weld.Card reveal="none" />                       // no reveal, no effect
  */
 
-import React, { type ReactNode } from 'react'
+import React, { useRef, useEffect, useCallback, type ReactNode } from 'react'
 import { useTilt3D, type TiltProp } from '../hooks/useTilt3D.js'
+import type { RevealProp } from '../hooks/useGsapReveal.js'
 
 export interface WeldCardProps {
   children?:  ReactNode
@@ -27,12 +29,18 @@ export interface WeldCardProps {
   /** Neon left border accent */
   accent?:    boolean
   /**
-   * 3D tilt effect on hover.
+   * 3D tilt on hover.
    * - true / object → tilt active (default: false)
    * - false         → no tilt
    * - 'none'        → no tilt, no will-change hint
    */
   tilt?:      TiltProp
+  /**
+   * GSAP entrance animation on mount. Requires gsap peer dependency.
+   * - true / object → animate in (default: false)
+   * - false / 'none' → no animation
+   */
+  reveal?:    RevealProp
   className?: string
   style?:     React.CSSProperties
   onClick?:   () => void
@@ -45,16 +53,55 @@ export function Card({
   footer,
   accent    = false,
   tilt      = false,
+  reveal    = false,
   className,
   style,
   onClick,
 }: WeldCardProps) {
-  const clickable      = !!onClick
-  const { ref, style: tiltStyle } = useTilt3D(tilt)
+  const clickable = !!onClick
+  const { ref: tiltRef, style: tiltStyle } = useTilt3D(tilt)
+  const revealDone = useRef(false)
+
+  // Merge tiltRef with local div ref for GSAP reveal
+  const setRef = useCallback((el: HTMLDivElement | null) => {
+    ;(tiltRef as React.MutableRefObject<HTMLElement | null>).current = el
+
+    // GSAP reveal on first mount only
+    if (!el || revealDone.current) return
+    const noEffect = reveal === false || reveal === 'none'
+    if (noEffect) return
+
+    const reduced = typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+
+    revealDone.current = true
+
+    const cfg = {
+      y: 20, x: 0, scale: 0.97, duration: 0.45, delay: 0, ease: 'power3.out',
+      ...(typeof reveal === 'object' && reveal !== null ? reveal : {}),
+    }
+
+    import('gsap').then(({ gsap }) => {
+      gsap.fromTo(el,
+        { opacity: 0, y: cfg.y, x: cfg.x, scale: cfg.scale },
+        {
+          opacity:    1,
+          y:          0,
+          x:          0,
+          scale:      1,
+          duration:   cfg.duration,
+          delay:      cfg.delay,
+          ease:       cfg.ease,
+          clearProps: 'transform',
+        }
+      )
+    }).catch(() => {})
+  }, [tiltRef, reveal])
 
   return (
     <div
-      ref={ref as React.RefObject<HTMLDivElement>}
+      ref={setRef}
       className={className}
       onClick={onClick}
       data-weld-card
@@ -70,7 +117,6 @@ export function Card({
         transition:   clickable
           ? 'border-color 0.15s ease, background 0.15s ease'
           : undefined,
-        // Tilt overrides transition only when active
         ...(tilt && tilt !== 'none' ? tiltStyle : {}),
         ...style,
       }}

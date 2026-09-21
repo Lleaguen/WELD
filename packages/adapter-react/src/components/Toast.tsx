@@ -172,9 +172,52 @@ export function ToastProvider({ position = 'bottom-right' }: WeldToastProviderPr
 
 function ToastItem({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
   const cfg = toastConfig[item.variant]
+  const ref = React.useRef<HTMLDivElement | null>(null)
+
+  // ── GSAP entrance ────────────────────────────────────────────────────────────
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const reduced = typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+
+    import('gsap').then(({ gsap }) => {
+      gsap.fromTo(el,
+        { opacity: 0, x: 18, scale: 0.95 },
+        { opacity: 1, x: 0,  scale: 1, duration: 0.3, ease: 'back.out(1.5)', clearProps: 'transform,scale' }
+      )
+    }).catch(() => {})
+  }, [])
+
+  // ── Animated dismiss ─────────────────────────────────────────────────────────
+  const handleDismiss = React.useCallback(() => {
+    const el = ref.current
+    if (!el) { onDismiss(); return }
+
+    const reduced = typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) { onDismiss(); return }
+
+    import('gsap').then(({ gsap }) => {
+      gsap.to(el, {
+        opacity:    0,
+        x:          14,
+        scale:      0.95,
+        maxHeight:  0,
+        marginBottom: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        duration:   0.22,
+        ease:       'power2.in',
+        onComplete: onDismiss,
+      })
+    }).catch(() => onDismiss())
+  }, [onDismiss])
 
   return (
     <div
+      ref={ref}
       data-weld-toast
       data-variant={item.variant}
       style={{
@@ -189,11 +232,13 @@ function ToastItem({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
         borderRadius: 'var(--weld-radius-lg, 8px)',
         backdropFilter: 'blur(12px)',
         boxShadow:    '0 4px 24px rgba(0,0,0,0.4)',
+        // CSS fallback — GSAP overrides on mount
         animation:    '_weld-toast-in 0.2s cubic-bezier(0.16,1,0.3,1)',
         pointerEvents: 'all',
         cursor:       'pointer',
+        overflow:     'hidden',
       }}
-      onClick={onDismiss}
+      onClick={handleDismiss}
     >
       {/* Icon */}
       <span style={{ fontSize: '0.8rem', color: cfg.color, fontWeight: 600, flexShrink: 0 }}>
@@ -222,7 +267,7 @@ function ToastItem({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
 
       {/* Dismiss */}
       <button
-        onClick={(e) => { e.stopPropagation(); onDismiss() }}
+        onClick={(e) => { e.stopPropagation(); handleDismiss() }}
         style={{
           background:   'transparent',
           border:       'none',
