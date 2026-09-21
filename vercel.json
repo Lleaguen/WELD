@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm --filter docs build",
+  "buildCommand": "npm ci --prefix docs && npm run build --prefix docs",
   "outputDirectory": "docs/dist",
-  "installCommand": "pnpm install --no-frozen-lockfile",
+  "installCommand": "echo 'skip'",
   "framework": null
 }
