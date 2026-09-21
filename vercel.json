@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd docs && npm install && npm run build",
+  "outputDirectory": "docs/dist",
+  "installCommand": "echo 'skip root install'",
+  "framework": null
+}
