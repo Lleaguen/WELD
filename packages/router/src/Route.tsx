@@ -1,15 +1,24 @@
-import React, { useContext, useEffect, useRef, type ReactNode, type ComponentType } from 'react'
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  type ReactNode,
+  type ComponentType,
+} from 'react'
 import { RouterContext } from './context.js'
 
 export interface RouteProps {
-  path:        string
-  component?:  ComponentType<Record<string, unknown>>
-  children?:   ReactNode
+  path:       string
+  component?: ComponentType<Record<string, unknown>>
+  children?:  ReactNode
   /** Exact match only. Default: true */
-  exact?:      boolean
+  exact?:     boolean
 }
 
-function matchPath(pattern: string, pathname: string): { matched: boolean; params: Record<string, string> } {
+export function matchPath(
+  pattern:  string,
+  pathname: string,
+): { matched: boolean; params: Record<string, string> } {
   // Normalize: trim trailing slashes, ensure leading slash
   const norm = (s: string) => '/' + s.split('/').filter(Boolean).join('/')
 
@@ -46,14 +55,20 @@ function matchPath(pattern: string, pathname: string): { matched: boolean; param
 export function Route({ path, component: Component, children }: RouteProps) {
   const ctx = useContext(RouterContext)
 
-  // Always call hooks unconditionally — rules of hooks
-  const paramsRef = useRef<Record<string, string>>({})
+  const result = ctx
+    ? matchPath(path, ctx.pathname)
+    : { matched: false, params: {} as Record<string, string> }
 
-  const result = ctx ? matchPath(path, ctx.pathname) : { matched: false, params: {} }
+  // Use setParams (from context) so param changes trigger proper re-renders.
+  // Track the last params we set to avoid calling setParams on every render.
+  const lastParamsRef = useRef<string>('')
 
   useEffect(() => {
-    if (ctx && result.matched) {
-      ctx.params = result.params
+    if (!ctx || !result.matched) return
+    const serialized = JSON.stringify(result.params)
+    if (serialized !== lastParamsRef.current) {
+      lastParamsRef.current = serialized
+      ctx.setParams(result.params)
     }
   })
 

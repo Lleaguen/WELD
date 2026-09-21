@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from 'react'
 
 export interface RouteParams {
   [key: string]: string
@@ -9,6 +16,7 @@ export interface RouterContextValue {
   search:     string
   hash:       string
   params:     RouteParams
+  setParams:  (p: RouteParams) => void
   navigate:   (to: string, options?: { replace?: boolean; state?: unknown }) => void
   back:       () => void
   forward:    () => void
@@ -18,7 +26,14 @@ export const RouterContext = createContext<RouterContextValue | null>(null)
 
 export function useRouter(): RouterContextValue {
   const ctx = useContext(RouterContext)
-  if (!ctx) throw new Error('[WeldRouter] Hooks must be used inside <WeldRouter>')
+  if (!ctx) throw new Error(
+    '[WeldRouter] Hooks must be used inside <WeldRouter>.\n' +
+    'Wrap your app with <WeldRouter>:\n\n' +
+    '  import { WeldRouter } from "@weldjs/router"\n\n' +
+    '  <WeldRouter>\n' +
+    '    <App />\n' +
+    '  </WeldRouter>'
+  )
   return ctx
 }
 
@@ -35,12 +50,13 @@ export function WeldRouter({ children, base = '' }: WeldRouterProps) {
   })
 
   const [location, setLocation] = useState(getLocation)
-  const [params, setParams]     = useState<RouteParams>({})
+  const [params,   setParams]   = useState<RouteParams>({})
 
   useEffect(() => {
     const handler = () => setLocation(getLocation())
     window.addEventListener('popstate', handler)
     return () => window.removeEventListener('popstate', handler)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [base])
 
   const navigate = useCallback((to: string, options?: { replace?: boolean; state?: unknown }) => {
@@ -51,13 +67,23 @@ export function WeldRouter({ children, base = '' }: WeldRouterProps) {
       window.history.pushState(options?.state ?? null, '', url)
     }
     setLocation(getLocation())
+    // Reset params on navigation — the matching Route will set new ones
+    setParams({})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [base])
 
-  const back    = useCallback(() => window.history.back(), [])
+  const back    = useCallback(() => window.history.back(),    [])
   const forward = useCallback(() => window.history.forward(), [])
 
   return (
-    <RouterContext.Provider value={{ ...location, params, navigate, back, forward }}>
+    <RouterContext.Provider value={{
+      ...location,
+      params,
+      setParams,
+      navigate,
+      back,
+      forward,
+    }}>
       {children}
     </RouterContext.Provider>
   )

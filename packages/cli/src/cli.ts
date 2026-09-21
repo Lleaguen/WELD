@@ -30,9 +30,21 @@ export async function run(args: string[]): Promise<void> {
       break
 
     case '--version':
-    case '-v':
-      console.log('0.1.0')
+    case '-v': {
+      // Read version from package.json at runtime — never stale
+      const { createRequire } = await import('node:module')
+      const { dirname }       = await import('node:path')
+      const { fileURLToPath } = await import('node:url')
+      try {
+        const req     = createRequire(fileURLToPath(import.meta.url))
+        const pkgPath = dirname(fileURLToPath(import.meta.url)) + '/../package.json'
+        const pkg     = req(pkgPath) as { version: string }
+        console.log(pkg.version)
+      } catch {
+        console.log('0.4.1')
+      }
       break
+    }
 
     case '--help':
     case '-h':

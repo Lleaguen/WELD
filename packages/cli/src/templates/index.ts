@@ -240,9 +240,9 @@ function DocsPage() {
     {
       path: 'src/lib/api.ts',
       content: `import { Weld } from '@weldjs/http'
-// import type { AppRouter } from '../types/router'
+import type { AppRouter } from '../../server/index'
 
-export const api = new Weld(
+export const api = new Weld<AppRouter>(
   import.meta.env.VITE_API_URL ?? 'http://localhost:3000',
   {
     // Disable retries in dev — errors appear immediately without waiting

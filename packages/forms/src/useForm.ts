@@ -62,7 +62,9 @@ export function useForm<T extends Record<string, unknown>>(
   const [status,  setStatus]  = useState<FormStatus>('idle')
   const initialRef = useRef(initialValues)
 
-  const isDirty = JSON.stringify(values) !== JSON.stringify(initialRef.current)
+  // Shallow comparison for isDirty — avoids O(n) JSON.stringify on every render
+  // and handles undefined values correctly (which JSON.stringify omits)
+  const isDirty = !shallowEqualObj(values, initialRef.current)
   const isValid = Object.keys(errors).length === 0
 
   // ── Validation ─────────────────────────────────────────────────────────────
@@ -93,9 +95,12 @@ export function useForm<T extends Record<string, unknown>>(
 
   const setTouched = useCallback((name: keyof T) => {
     setTouchedState((prev) => ({ ...prev, [name]: true }))
-    // Validate on blur
-    setErrors(validate(values))
-  }, [validate, values])
+    // Use functional setter to read the latest values — avoids stale closure
+    setValues((currentValues) => {
+      setErrors(validate(currentValues))
+      return currentValues
+    })
+  }, [validate])
 
   // ── register ───────────────────────────────────────────────────────────────
   const register = useCallback((name: keyof T): {
@@ -166,4 +171,23 @@ export function useForm<T extends Record<string, unknown>>(
     handleSubmit,
     reset,
   }
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+/**
+ * Shallow equality for plain objects.
+ * Faster than JSON.stringify and handles undefined values correctly.
+ */
+function shallowEqualObj(
+  a: Record<string, unknown>,
+  b: Record<string, unknown>,
+): boolean {
+  const keysA = Object.keys(a)
+  const keysB = Object.keys(b)
+  if (keysA.length !== keysB.length) return false
+  for (const key of keysA) {
+    if (!Object.is(a[key], b[key])) return false
+  }
+  return true
 }

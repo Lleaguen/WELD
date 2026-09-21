@@ -7,13 +7,15 @@
 import { dbPut, dbDelete, dbGetAll, STORE_QUEUE } from './storage.js'
 
 export interface QueuedMutation {
-  id?:       number        // autoincrement key
-  method:    'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  url:       string
-  body:      unknown
-  headers:   Record<string, string>
-  createdAt: number
-  attempts:  number
+  id?:        number        // autoincrement key
+  method:     'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  url:        string
+  body:       unknown
+  headers:    Record<string, string>
+  createdAt:  number
+  attempts:   number
+  /** true when attempts >= MAX_ATTEMPTS — excluded from future sync runs */
+  deadLetter?: boolean
 }
 
 const MAX_ATTEMPTS = 5
@@ -31,10 +33,30 @@ export async function enqueue(mutation: Omit<QueuedMutation, 'id' | 'createdAt' 
 }
 
 /**
- * Reads all pending mutations from the queue in FIFO order.
+ * Reads all pending (non-dead-letter) mutations from the queue in FIFO order.
  */
 export async function readQueue(): Promise<QueuedMutation[]> {
-  return dbGetAll<QueuedMutation>(STORE_QUEUE)
+  const all = await dbGetAll<QueuedMutation>(STORE_QUEUE)
+  return all.filter(item => !item.deadLetter)
+}
+
+/**
+ * Reads all dead-letter mutations (exceeded max attempts).
+ * Useful for debugging and manual inspection.
+ */
+export async function readDeadLetters(): Promise<QueuedMutation[]> {
+  const all = await dbGetAll<QueuedMutation>(STORE_QUEUE)
+  return all.filter(item => item.deadLetter === true)
+}
+
+/**
+ * Clears all dead-letter mutations from the queue.
+ */
+export async function clearDeadLetters(): Promise<void> {
+  const dead = await readDeadLetters()
+  for (const item of dead) {
+    if (item.id !== undefined) await dbDelete(STORE_QUEUE, item.id)
+  }
 }
 
 /**
@@ -72,11 +94,12 @@ export async function syncQueue(): Promise<void> {
       const updatedItem: QueuedMutation = { ...item, attempts: item.attempts + 1 }
 
       if (updatedItem.attempts >= MAX_ATTEMPTS) {
-        // Dead letter — keep in queue but stop retrying (mark with negative id pattern via attempts)
-        console.warn('[WELD] Mutation exceeded max attempts, kept as dead letter:', item.url)
+        // Mark as dead letter — readQueue() will filter it out on future sync runs
+        console.warn('[WELD] Mutation exceeded max attempts, moved to dead letter:', item.url)
+        await dbPut(STORE_QUEUE, { ...updatedItem, deadLetter: true })
+      } else {
+        await dbPut(STORE_QUEUE, updatedItem)
       }
-
-      await dbPut(STORE_QUEUE, updatedItem)
     }
   }
 }

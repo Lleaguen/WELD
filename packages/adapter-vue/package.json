@@ -24,13 +24,13 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
+    "@weldjs/core": "workspace:*",
     "@preact/signals-core": "^1.6.0"
   },
   "peerDependencies": {
     "vue": ">=3.3.0"
   },
   "devDependencies": {
-    "@weldjs/core": "workspace:*",
     "vue": "^3.4.0",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",

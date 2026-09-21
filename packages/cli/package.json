@@ -19,9 +19,7 @@
     "lint": "tsc --noEmit",
     "prepublishOnly": "pnpm build"
   },
-  "dependencies": {
-    "zod": "^3.22.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.4.0"

@@ -41,14 +41,19 @@ export async function cmdCreate(args: string[]): Promise<void> {
   log(`     ${c.dim('+')} src/assets/weld.png`)
 
   step(2, 'Installing dependencies...')
+  // Detect package manager from lockfiles — same logic as weld dev/build
+  const hasBun  = pathExists(resolvePath('bun.lockb'))
+  const hasPnpm = pathExists(resolvePath('pnpm-lock.yaml'))
+  const pm      = hasBun ? 'bun' : hasPnpm ? 'pnpm' : 'npm'
+
   try {
-    execSync('npm install', { cwd: dest, stdio: 'inherit' })
+    execSync(`${pm} install`, { cwd: dest, stdio: 'inherit' })
   } catch {
-    log(`  ${c.dim('(skip — run npm install manually)')}`)
+    log(`  ${c.dim(`(skip — run ${pm} install manually)`)}`)
   }
 
   ok('Done!\n')
   log(`  Next steps:\n`)
   log(`    ${c.cyan(`cd ${name}`)}`)
-  log(`    ${c.cyan('npm run dev')}\n`)
+  log(`    ${c.cyan(`${pm} run dev`)}\n`)
 }

@@ -92,17 +92,19 @@ export function Table<T extends Record<string, unknown>>({
         {/* Body */}
         <tbody>
           {loading ? (
+            // Fixed skeleton widths — no Math.random() to avoid SSR hydration mismatch
             Array.from({ length: 4 }).map((_, i) => (
               <tr key={i}>
-                {columns.map((col) => (
+                {columns.map((col, j) => (
                   <td key={String(col.key)} style={{ padding: '10px 14px' }}>
                     <div style={{
-                      height:     '12px',
-                      borderRadius: '3px',
-                      background: 'linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 75%)',
+                      height:         '12px',
+                      borderRadius:   '3px',
+                      background:     'linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 75%)',
                       backgroundSize: '200% 100%',
-                      animation: '_weld-shimmer 1.6s ease-in-out infinite',
-                      width: `${60 + Math.random() * 30}%`,
+                      animation:      '_weld-shimmer 1.6s ease-in-out infinite',
+                      // Deterministic widths cycling through 3 sizes per row
+                      width: `${[75, 55, 90, 65, 80][( i * columns.length + j) % 5]}%`,
                     }} />
                   </td>
                 ))}

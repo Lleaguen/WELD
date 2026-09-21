@@ -232,13 +232,14 @@ export function WeldProvider({
   const mergedBreakpoints = { ...defaultBreakpoints, ...breakpoints }
 
   useEffect(() => {
-    // Inject base styles once
+    // Inject base styles once — guarded internally, safe to call every time
     injectBaseStyles()
 
-    // Inject / update CSS tokens
+    // Inject / update CSS tokens — only when specific values change,
+    // not when the parent re-renders with a new `theme` object reference
     const overrides: WeldTokens = { ...theme.tokens }
     if (theme.primaryColor) {
-      overrides['--weld-plasma-cyan'] = theme.primaryColor
+      overrides['--weld-plasma-cyan']   = theme.primaryColor
       overrides['--weld-state-online']  = theme.primaryColor
       overrides['--weld-state-loading'] = theme.primaryColor
     }
@@ -248,7 +249,10 @@ export function WeldProvider({
     if (typeof document !== 'undefined') {
       injectTokens(overrides)
     }
-  }, [theme])
+  // Use specific primitive deps so a new object reference on parent re-render
+  // doesn't re-inject tokens unnecessarily
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [theme.primaryColor, theme.accentColor, theme.tokens])
 
   return (
     <WeldContext.Provider value={{ routerAdapter, breakpoints: mergedBreakpoints, theme }}>

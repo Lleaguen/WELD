@@ -65,40 +65,27 @@
   "dependencies": {
     "@preact/signals-core": "^1.6.0",
     "zod": "^3.22.0",
-    "@weldjs/core": "^0.1.0",
-    "@weldjs/react": "^0.2.1"
+    "@weldjs/core": "^0.1.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
+    "@weldjs/react": ">=0.3.0",
     "vue": ">=3.3.0",
-    "solid-js": ">=1.8.0",
-    "rxjs": ">=7.0.0",
     "@weldjs/vue": ">=0.1.1",
+    "solid-js": ">=1.8.0",
     "@weldjs/solid": ">=0.1.0",
+    "rxjs": ">=7.0.0",
     "@weldjs/angular": ">=0.1.0"
   },
   "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
-    "vue": {
-      "optional": true
-    },
-    "solid-js": {
-      "optional": true
-    },
-    "rxjs": {
-      "optional": true
-    },
-    "@weldjs/vue": {
-      "optional": true
-    },
-    "@weldjs/solid": {
-      "optional": true
-    },
-    "@weldjs/angular": {
-      "optional": true
-    }
+    "react": { "optional": true },
+    "@weldjs/react": { "optional": true },
+    "vue": { "optional": true },
+    "@weldjs/vue": { "optional": true },
+    "solid-js": { "optional": true },
+    "@weldjs/solid": { "optional": true },
+    "rxjs": { "optional": true },
+    "@weldjs/angular": { "optional": true }
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
