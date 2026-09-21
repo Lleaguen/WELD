@@ -2,6 +2,7 @@
   "name": "weld",
   "version": "0.0.0",
   "private": true,
+  "packageManager": "pnpm@10.28.0",
   "description": "WELD — End-to-End Type-Safe HTTP Client",
   "scripts": {
     "build": "pnpm -r run build",
