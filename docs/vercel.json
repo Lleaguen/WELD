@@ -1,6 +1,6 @@
 {
   "framework": "astro",
-  "buildCommand": "npm run build",
+  "buildCommand": "npx --yes astro build",
   "outputDirectory": "dist",
-  "installCommand": "npm install --foreground-scripts"
+  "installCommand": "npm install"
 }
