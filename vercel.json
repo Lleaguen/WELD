@@ -1,6 +1,0 @@
-{
-  "buildCommand": "cd docs && npm ci && npm run build",
-  "outputDirectory": "docs/dist",
-  "installCommand": "echo 'skip'",
-  "framework": null
-}
