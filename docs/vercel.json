@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm install && npm run build",
+  "buildCommand": "npm install --ignore-scripts && npm install sharp --foreground-scripts && npm run build",
   "outputDirectory": "dist",
   "installCommand": "echo skip"
 }
