@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm install --ignore-scripts && npm install sharp --foreground-scripts && npm run build",
+  "buildCommand": "npm install --ignore-scripts && npm install sharp --foreground-scripts && ./node_modules/.bin/astro build",
   "outputDirectory": "dist",
   "installCommand": "echo skip"
 }
