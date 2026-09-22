@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm ci --prefix docs && npm run build --prefix docs",
+  "buildCommand": "cd docs && npm ci && npm run build",
   "outputDirectory": "docs/dist",
   "installCommand": "echo 'skip'",
   "framework": null
